@@ -1,0 +1,49 @@
+@preconcurrency import CoreBluetooth
+
+enum PM5UUIDs {
+    // TODO: Confirm these Concept2 PM5 UUIDs against the official Bluetooth Smart
+    // interface definition and a real hardware GATT inspection before shipping.
+    static let deviceService = "CE060000-43E5-11E4-916C-0800200C9A66"
+    static let rowingService = "CE060030-43E5-11E4-916C-0800200C9A66"
+    static let rowingStatus = "CE060031-43E5-11E4-916C-0800200C9A66"
+    static let extraStatus1 = "CE060032-43E5-11E4-916C-0800200C9A66"
+    static let extraStatus2 = "CE060033-43E5-11E4-916C-0800200C9A66"
+    static let extraStrokeData = "CE060036-43E5-11E4-916C-0800200C9A66"
+
+    static func uuid(_ value: String) -> CBUUID {
+        CBUUID(string: value)
+    }
+}
+
+struct PM5NotificationDefinition {
+    let serviceUUID: String
+    let characteristicUUID: String
+    let label: String
+}
+
+enum PM5Protocol {
+    static let nameHints = ["concept2", "pm5", "rowerg", "erg"]
+
+    static let notificationDefinitions = [
+        PM5NotificationDefinition(
+            serviceUUID: PM5UUIDs.rowingService,
+            characteristicUUID: PM5UUIDs.rowingStatus,
+            label: "Rowing Status"
+        ),
+        PM5NotificationDefinition(
+            serviceUUID: PM5UUIDs.rowingService,
+            characteristicUUID: PM5UUIDs.extraStatus1,
+            label: "Additional Status 1"
+        ),
+        PM5NotificationDefinition(
+            serviceUUID: PM5UUIDs.rowingService,
+            characteristicUUID: PM5UUIDs.extraStatus2,
+            label: "Additional Status 2"
+        ),
+        PM5NotificationDefinition(
+            serviceUUID: PM5UUIDs.rowingService,
+            characteristicUUID: PM5UUIDs.extraStrokeData,
+            label: "Extra Stroke Data"
+        ),
+    ]
+}
