@@ -8,15 +8,15 @@ enum PM5Parsers {
     ) -> RowingMetricsPatch? {
         switch characteristicUUID.uuidString.uppercased() {
         case PM5UUIDs.rowingStatus:
-            parseRowingStatus(data)
+            return parseRowingStatus(data)
         case PM5UUIDs.extraStatus1:
-            parseExtraStatus1(data)
+            return parseExtraStatus1(data)
         case PM5UUIDs.extraStatus2:
-            parseExtraStatus2(data)
+            return parseExtraStatus2(data)
         case PM5UUIDs.extraStrokeData:
-            parseExtraStrokeData(data)
+            return parseExtraStrokeData(data)
         default:
-            nil
+            return nil
         }
     }
 
