@@ -16,11 +16,13 @@ targets:
       - RowerGameCenter/Components
       - RowerGameCenter/DesignSystem
       - RowerGameCenter/Features
+      - path: RowerGameCenter/Resources
+        buildPhase: resources
       - RowerGameCenter/Support
-    resources:
-      - RowerGameCenter/Resources
     info:
       path: RowerGameCenter/Support/Info.plist
+      properties:
+        UILaunchStoryboardName: LaunchScreen
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.sebastianboehler.rowergamecenter

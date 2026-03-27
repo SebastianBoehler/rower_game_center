@@ -46,6 +46,42 @@ enum RowingConnectionPhase: String {
     case error
 }
 
+extension RowingConnectionPhase {
+    var title: String {
+        switch self {
+        case .idle:
+            "Ready"
+        case .scanning:
+            "Scanning"
+        case .connecting:
+            "Connecting"
+        case .connected:
+            "Connected"
+        case .disconnecting:
+            "Disconnecting"
+        case .error:
+            "Attention"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .idle:
+            "pause.circle.fill"
+        case .scanning:
+            "dot.radiowaves.left.and.right"
+        case .connecting:
+            "link.circle.fill"
+        case .connected:
+            "checkmark.circle.fill"
+        case .disconnecting:
+            "xmark.circle.fill"
+        case .error:
+            "exclamationmark.triangle.fill"
+        }
+    }
+}
+
 struct PM5DeviceSummary: Identifiable, Equatable {
     let id: UUID
     let name: String
