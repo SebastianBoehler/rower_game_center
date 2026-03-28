@@ -37,4 +37,26 @@ enum AppFormatters {
         guard let value else { return "--" }
         return "\(value) spm"
     }
+
+    static func shortSeconds(_ value: TimeInterval?) -> String {
+        guard let value else { return "--" }
+        return String(format: "%.2f s", value)
+    }
+
+    static func force(_ value: Double?) -> String {
+        guard let value else { return "--" }
+        return String(format: "%.0f lb", value)
+    }
+
+    static func energy(_ value: Double?) -> String {
+        guard let value else { return "--" }
+        return String(format: "%.1f J", value)
+    }
+
+    static func relativeTimestamp(_ value: Date?) -> String {
+        guard let value else { return "Waiting for live data" }
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .short
+        return formatter.localizedString(for: value, relativeTo: .now)
+    }
 }

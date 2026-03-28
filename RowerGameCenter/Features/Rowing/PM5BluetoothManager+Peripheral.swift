@@ -31,11 +31,15 @@ extension PM5BluetoothManager: @MainActor CBPeripheralDelegate {
         }
 
         for characteristic in service.characteristics ?? [] {
+            registerDiscoveredCharacteristic(characteristic)
+
             guard matchingDefinitions.contains(where: { $0.characteristicUUID == characteristic.uuid.uuidString.uppercased() }) else {
                 continue
             }
 
-            peripheral.setNotifyValue(true, for: characteristic)
+            if characteristic.properties.contains(.notify) || characteristic.properties.contains(.indicate) {
+                peripheral.setNotifyValue(true, for: characteristic)
+            }
         }
 
         validateNotificationCoverage(for: peripheral)
@@ -51,7 +55,7 @@ extension PM5BluetoothManager: @MainActor CBPeripheralDelegate {
             return
         }
 
-        updateMetrics(using: characteristic)
+        handleNotification(from: characteristic)
     }
 
     func peripheral(

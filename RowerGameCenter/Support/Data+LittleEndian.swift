@@ -14,4 +14,12 @@ extension Data {
             | (UInt32(byte(at: offset + 1)) << 8)
             | (UInt32(byte(at: offset + 2)) << 16)
     }
+
+    func uint16WordsLE(startingAt offset: Int, count: Int) -> [UInt16] {
+        guard count > 0 else { return [] }
+
+        return (0 ..< count).map { index in
+            uint16LE(at: offset + (index * 2))
+        }
+    }
 }

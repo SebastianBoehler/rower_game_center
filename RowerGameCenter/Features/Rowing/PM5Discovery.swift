@@ -47,4 +47,17 @@ enum PM5Discovery {
             ) == true
         }
     }
+
+    static func hasCharacteristic(
+        serviceUUID: String,
+        characteristicUUID: String,
+        in services: [PM5DiscoveredServiceSnapshot]
+    ) -> Bool {
+        services.contains { service in
+            service.uuid.caseInsensitiveCompare(serviceUUID) == .orderedSame
+                && service.characteristics.contains {
+                    $0.caseInsensitiveCompare(characteristicUUID) == .orderedSame
+                }
+        }
+    }
 }

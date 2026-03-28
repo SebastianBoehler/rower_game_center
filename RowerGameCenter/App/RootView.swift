@@ -5,6 +5,6 @@ struct RootView: View {
         NavigationStack {
             RowingDashboardView()
         }
-        .tint(AppTheme.action)
+        .tint(AppTheme.tint)
     }
 }

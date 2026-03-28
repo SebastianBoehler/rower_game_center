@@ -6,20 +6,19 @@ struct MetricTile: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(title.uppercased())
-                .font(.caption.weight(.bold))
-                .foregroundStyle(AppTheme.mutedInk)
+            Text(title)
+                .font(.caption.weight(.medium))
+                .foregroundStyle(.secondary)
 
             Text(value)
-                .font(.title3.weight(.heavy))
-                .foregroundStyle(AppTheme.ink)
+                .font(.title3.weight(.semibold))
+                .monospacedDigit()
                 .minimumScaleFactor(0.7)
                 .lineLimit(1)
         }
-        .frame(maxWidth: .infinity, minHeight: 96, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: 92, alignment: .leading)
         .padding(16)
-        .background(AppTheme.background)
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .background(AppTheme.tertiaryGroupedBackground, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(title), \(value)")
     }

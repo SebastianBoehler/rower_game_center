@@ -2,115 +2,111 @@ import SwiftUI
 
 struct LaneSprintView: View {
     @Environment(PM5BluetoothManager.self) private var bluetoothManager
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private let goalDistance = 500.0
 
     var body: some View {
         Group {
             if bluetoothManager.metrics.connected {
-                content
+                liveSession
             } else {
                 unavailableState
             }
         }
-        .background(AppTheme.background.ignoresSafeArea())
+        .background(AppTheme.groupedBackground.ignoresSafeArea())
         .navigationTitle("Lane Sprint")
         .navigationBarTitleDisplayMode(.inline)
-        .fontDesign(.rounded)
     }
 
-    private var content: some View {
-        VStack(spacing: 18) {
-            VStack(alignment: .leading, spacing: 10) {
-                Text("Live session")
-                    .font(.caption.weight(.bold))
-                    .foregroundStyle(AppTheme.accent)
-                    .textCase(.uppercase)
+    private var liveSession: some View {
+        VStack(spacing: 20) {
+            sessionHeader
 
-                Text("Your boat only moves from real PM5 distance.")
-                    .font(.title.weight(.heavy))
-                    .foregroundStyle(.white)
-
-                Text("This screen keeps the playfield clear and uses a compact HUD, not a dashboard wall.")
-                    .font(.body)
-                    .foregroundStyle(Color.white.opacity(0.8))
-            }
-            .padding(22)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(AppTheme.heroGradient)
-            .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
-
-            PanelCard(title: "Track") {
-                GeometryReader { geometry in
-                    ZStack(alignment: .leading) {
-                        RoundedRectangle(cornerRadius: 24, style: .continuous)
-                            .fill(AppTheme.accentSoft)
-
-                        RoundedRectangle(cornerRadius: 4, style: .continuous)
-                            .fill(AppTheme.ink)
-                            .frame(width: 4)
-                            .frame(maxWidth: .infinity, alignment: .trailing)
-                            .padding(.vertical, 10)
-                            .padding(.trailing, 16)
-
-                        Circle()
-                            .fill(AppTheme.ink)
-                            .frame(width: 30, height: 30)
-                            .overlay {
-                                Image(systemName: "figure.rower")
-                                    .font(.system(size: 12, weight: .black))
-                                    .foregroundStyle(.white)
-                            }
-                            .offset(x: boatOffset(for: geometry.size.width))
-                            .animation(reduceMotion ? nil : .snappy(duration: 0.32), value: bluetoothManager.metrics.distance)
-                    }
-                }
-                .frame(height: 92)
-
-                HStack {
-                    statView(title: "Distance", value: AppFormatters.distance(bluetoothManager.metrics.distance))
-                    Spacer()
-                    statView(title: "Pace", value: AppFormatters.pace(bluetoothManager.metrics.pace))
-                    Spacer()
-                    statView(title: "Power", value: AppFormatters.watts(bluetoothManager.metrics.powerWatts))
-                }
-            }
-
-            Spacer()
+            LaneSprintTrackView(
+                distance: bluetoothManager.metrics.distance,
+                goalDistance: goalDistance
+            )
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .padding(20)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .padding(.horizontal, 20)
+        .padding(.top, 16)
+        .safeAreaInset(edge: .bottom) {
+            sessionHUD
+        }
     }
 
     private var unavailableState: some View {
-        VStack(spacing: 12) {
-            Text("Connect a PM5 to play")
-                .font(.title.weight(.heavy))
-                .foregroundStyle(AppTheme.ink)
-
-            Text("Lane Sprint does not simulate rowing. It only reads live BLE metrics from a real Concept2 PM5.")
-                .font(.body)
-                .foregroundStyle(AppTheme.secondaryInk)
-                .multilineTextAlignment(.center)
+        ContentUnavailableView {
+            Label("Connect a PM5 to Play", systemImage: "figure.rower")
+        } description: {
+            Text("Lane Sprint only reacts to live PM5 distance. Start a scan here or connect from the main dashboard.")
+        } actions: {
+            Button(bluetoothManager.isScanning ? "Stop Scan" : "Scan for PM5") {
+                if bluetoothManager.isScanning {
+                    bluetoothManager.stopScan()
+                } else {
+                    bluetoothManager.startScan()
+                }
+            }
+            .buttonStyle(.borderedProminent)
         }
-        .padding(24)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.horizontal, 20)
     }
 
-    private func boatOffset(for totalWidth: CGFloat) -> CGFloat {
-        let progress = min((bluetoothManager.metrics.distance ?? 0) / goalDistance, 1)
-        let usableWidth = max(totalWidth - 70, 0)
-        return usableWidth * progress
+    private var sessionHeader: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                StatusBadge(title: "Live PM5", systemImage: "bolt.horizontal.fill", tint: AppTheme.success)
+
+                Spacer()
+
+                Text("500 m target")
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.secondary)
+            }
+
+            Text("Your boat advances only from live PM5 distance, keeping the playfield clear and glanceable while you row.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private func statView(title: String, value: String) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
+    private var sessionHUD: some View {
+        HStack(spacing: 0) {
+            sessionMetric(title: "Distance", value: AppFormatters.distance(bluetoothManager.metrics.distance))
+            Divider()
+                .frame(height: 34)
+            sessionMetric(title: "Pace", value: AppFormatters.pace(bluetoothManager.metrics.pace))
+            Divider()
+                .frame(height: 34)
+            sessionMetric(title: "Power", value: AppFormatters.watts(bluetoothManager.metrics.powerWatts))
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .strokeBorder(AppTheme.separator.opacity(0.12), lineWidth: 1)
+        }
+        .padding(.horizontal, 20)
+        .padding(.bottom, 8)
+    }
+
+    private func sessionMetric(title: String, value: String) -> some View {
+        VStack(alignment: .center, spacing: 4) {
             Text(title.uppercased())
-                .font(.caption.weight(.bold))
-                .foregroundStyle(AppTheme.mutedInk)
+                .font(.caption.weight(.medium))
+                .foregroundStyle(.secondary)
 
             Text(value)
-                .font(.headline.weight(.heavy))
-                .foregroundStyle(AppTheme.ink)
+                .font(.headline.weight(.semibold))
+                .monospacedDigit()
+                .minimumScaleFactor(0.7)
+                .lineLimit(1)
         }
+        .frame(maxWidth: .infinity)
     }
 }

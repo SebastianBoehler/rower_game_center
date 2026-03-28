@@ -1,14 +1,14 @@
 @preconcurrency import CoreBluetooth
 
 enum PM5UUIDs {
-    // TODO: Confirm these Concept2 PM5 UUIDs against the official Bluetooth Smart
-    // interface definition and a real hardware GATT inspection before shipping.
     static let deviceService = "CE060000-43E5-11E4-916C-0800200C9A66"
     static let rowingService = "CE060030-43E5-11E4-916C-0800200C9A66"
     static let rowingStatus = "CE060031-43E5-11E4-916C-0800200C9A66"
     static let extraStatus1 = "CE060032-43E5-11E4-916C-0800200C9A66"
     static let extraStatus2 = "CE060033-43E5-11E4-916C-0800200C9A66"
+    static let rowingStrokeData = "CE060035-43E5-11E4-916C-0800200C9A66"
     static let extraStrokeData = "CE060036-43E5-11E4-916C-0800200C9A66"
+    static let forceCurveData = "CE06003D-43E5-11E4-916C-0800200C9A66"
 
     static func uuid(_ value: String) -> CBUUID {
         CBUUID(string: value)
@@ -42,8 +42,18 @@ enum PM5Protocol {
         ),
         PM5NotificationDefinition(
             serviceUUID: PM5UUIDs.rowingService,
+            characteristicUUID: PM5UUIDs.rowingStrokeData,
+            label: "Rowing Stroke Data"
+        ),
+        PM5NotificationDefinition(
+            serviceUUID: PM5UUIDs.rowingService,
             characteristicUUID: PM5UUIDs.extraStrokeData,
             label: "Extra Stroke Data"
+        ),
+        PM5NotificationDefinition(
+            serviceUUID: PM5UUIDs.rowingService,
+            characteristicUUID: PM5UUIDs.forceCurveData,
+            label: "Force Curve Data"
         ),
     ]
 }
