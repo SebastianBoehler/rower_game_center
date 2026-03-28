@@ -6,10 +6,23 @@ struct RowingMetrics {
     var elapsedTime: TimeInterval?
     var distance: Double?
     var strokeRate: Int?
+    var strokeState: Int?
     var pace: TimeInterval?
+    var averagePace: TimeInterval?
+    var averagePowerWatts: Int?
     var powerWatts: Int?
     var calories: Int?
     var heartRate: Int?
+    var strokeCount: Int?
+    var driveLengthMeters: Double?
+    var driveTime: TimeInterval?
+    var recoveryTime: TimeInterval?
+    var strokeDistanceMeters: Double?
+    var peakDriveForcePounds: Double?
+    var averageDriveForcePounds: Double?
+    var projectedWorkTime: TimeInterval?
+    var projectedWorkDistanceMeters: Double?
+    var workPerStrokeJoules: Double?
     var lastUpdatedAt: Date?
 }
 
@@ -17,10 +30,23 @@ struct RowingMetricsPatch {
     var elapsedTime: TimeInterval?
     var distance: Double?
     var strokeRate: Int?
+    var strokeState: Int?
     var pace: TimeInterval?
+    var averagePace: TimeInterval?
+    var averagePowerWatts: Int?
     var powerWatts: Int?
     var calories: Int?
     var heartRate: Int?
+    var strokeCount: Int?
+    var driveLengthMeters: Double?
+    var driveTime: TimeInterval?
+    var recoveryTime: TimeInterval?
+    var strokeDistanceMeters: Double?
+    var peakDriveForcePounds: Double?
+    var averageDriveForcePounds: Double?
+    var projectedWorkTime: TimeInterval?
+    var projectedWorkDistanceMeters: Double?
+    var workPerStrokeJoules: Double?
 }
 
 extension RowingMetrics {
@@ -29,10 +55,23 @@ extension RowingMetrics {
         elapsedTime = patch.elapsedTime ?? elapsedTime
         distance = patch.distance ?? distance
         strokeRate = patch.strokeRate ?? strokeRate
+        strokeState = patch.strokeState ?? strokeState
         pace = patch.pace ?? pace
+        averagePace = patch.averagePace ?? averagePace
+        averagePowerWatts = patch.averagePowerWatts ?? averagePowerWatts
         powerWatts = patch.powerWatts ?? powerWatts
         calories = patch.calories ?? calories
         heartRate = patch.heartRate ?? heartRate
+        strokeCount = patch.strokeCount ?? strokeCount
+        driveLengthMeters = patch.driveLengthMeters ?? driveLengthMeters
+        driveTime = patch.driveTime ?? driveTime
+        recoveryTime = patch.recoveryTime ?? recoveryTime
+        strokeDistanceMeters = patch.strokeDistanceMeters ?? strokeDistanceMeters
+        peakDriveForcePounds = patch.peakDriveForcePounds ?? peakDriveForcePounds
+        averageDriveForcePounds = patch.averageDriveForcePounds ?? averageDriveForcePounds
+        projectedWorkTime = patch.projectedWorkTime ?? projectedWorkTime
+        projectedWorkDistanceMeters = patch.projectedWorkDistanceMeters ?? projectedWorkDistanceMeters
+        workPerStrokeJoules = patch.workPerStrokeJoules ?? workPerStrokeJoules
         lastUpdatedAt = .now
     }
 }

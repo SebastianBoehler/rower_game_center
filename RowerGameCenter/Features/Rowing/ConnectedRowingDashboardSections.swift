@@ -52,7 +52,7 @@ struct ConnectedRowingDashboardSections: View {
     }
 
     private var gamesSection: some View {
-        PanelCard(title: "Games", subtitle: "Start a workout view only when the PM5 feed is live.") {
+        PanelCard(title: "Games & Coaching", subtitle: "Open focused workout views only when the PM5 feed is live.") {
             VStack(spacing: 12) {
                 gameCard(
                     title: "Lane Sprint",
@@ -68,6 +68,14 @@ struct ConnectedRowingDashboardSections: View {
                     systemImage: "metronome.fill"
                 ) {
                     CadenceLockView()
+                }
+
+                gameCard(
+                    title: "Stroke Shape",
+                    subtitle: "Overlay the live PM5 force curve with a coaching reference.",
+                    systemImage: "waveform.path.ecg.rectangle"
+                ) {
+                    StrokeShapeView()
                 }
             }
         }

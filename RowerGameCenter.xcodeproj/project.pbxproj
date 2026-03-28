@@ -10,10 +10,13 @@
 		01DFCAFB795C410BDFA9CD94 /* Data+LittleEndian.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B6817BBF5C7444E214C576 /* Data+LittleEndian.swift */; };
 		077CBD82479E702A48705D71 /* LaneSprintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B020C6FB364845AEDA10CF35 /* LaneSprintView.swift */; };
 		08D2A6C2E4E986688979F9B7 /* AppFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4133491D376DC324CFADA889 /* AppFormatters.swift */; };
+		0B73EAB16F5E65317C75C1EB /* StrokeShapeAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C20B14697D1351E0322AFE /* StrokeShapeAnalyzer.swift */; };
 		0D0148CA2A62EBEADCB89032 /* StatusBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BE27EE27B4CF3364440AB9 /* StatusBadge.swift */; };
 		0FE8F6361EE64E6614E9A506 /* ConnectedRowingDashboardSections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4C635B544BBE03F656CBAB /* ConnectedRowingDashboardSections.swift */; };
 		16DF7E04B35B897097F3E4E8 /* PM5Parsers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2F6A2B902A58DF1A4FF5CCA /* PM5Parsers.swift */; };
 		1828ACF061887A09602B01DA /* PM5Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF0DDBCB17B8616716726B0 /* PM5Protocol.swift */; };
+		1AD95601B8064E7ABB0E124B /* PM5ForceCurveAssembler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C3BAF7861CAD3A1D542ABC /* PM5ForceCurveAssembler.swift */; };
+		1BEC4EFBA359793036439FBB /* StrokeShapeGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F15A25325603A93C6A3F3E4 /* StrokeShapeGraphView.swift */; };
 		211B1549D049501792764001 /* RowingDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F34610BD1829725D0B183C /* RowingDashboardView.swift */; };
 		228902EF195608FA5538741F /* DisconnectedRowingDashboardSections.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB556273504536F68DD597F1 /* DisconnectedRowingDashboardSections.swift */; };
 		2C6D3F7BD29ECE5AE8CDD270 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 440293EEE74661F0757CB226 /* RootView.swift */; };
@@ -29,7 +32,9 @@
 		61EAC525B2C4DC127A591DAD /* CadenceLockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58E580F372CC5190AA7D2C87 /* CadenceLockView.swift */; };
 		6732C932ED34324C081AF7E8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 686D6D76B62A413FF3650619 /* LaunchScreen.storyboard */; };
 		6E56C338963D6835D9F1F9DE /* PowerBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5F62E4A64E1605F67DD3379 /* PowerBar.swift */; };
+		739FFF5E62B1F9B5FDC5D472 /* StrokeShapeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3208EFE6158DDDC3201499E /* StrokeShapeView.swift */; };
 		9B1853ED1FF54B5CEA226AF8 /* BluetoothStateLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6D443167810A906DD7E458 /* BluetoothStateLabel.swift */; };
+		9E7A614DC9D440EB7A577992 /* ForceCurveModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902824E304607793546D961E /* ForceCurveModels.swift */; };
 		A40F8B012E60060E6447949C /* PM5BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F333C0F71556AEAE4D51BAC /* PM5BluetoothManager.swift */; };
 		D54E161DCDC95760F8A25008 /* RowingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDCDD32ABD1CE43B7DC93034 /* RowingModels.swift */; };
 		DDFD8BE67519F7175EF71238 /* RowerGameCenterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC49E0BE8EA69541273F30FA /* RowerGameCenterApp.swift */; };
@@ -37,6 +42,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1F15A25325603A93C6A3F3E4 /* StrokeShapeGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeShapeGraphView.swift; sourceTree = "<group>"; };
+		28C20B14697D1351E0322AFE /* StrokeShapeAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeShapeAnalyzer.swift; sourceTree = "<group>"; };
 		38EFCB501A8C3F4D97D6EB67 /* LaneSprintTrackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaneSprintTrackView.swift; sourceTree = "<group>"; };
 		3BED361C46B3D49A747E2659 /* CadenceLockDialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CadenceLockDialView.swift; sourceTree = "<group>"; };
 		3CB89B6728DC51F01C7F9FDC /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
@@ -46,8 +53,10 @@
 		58E580F372CC5190AA7D2C87 /* CadenceLockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CadenceLockView.swift; sourceTree = "<group>"; };
 		5AFBBD8B7447C538A72A7B9D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5F333C0F71556AEAE4D51BAC /* PM5BluetoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PM5BluetoothManager.swift; sourceTree = "<group>"; };
+		67C3BAF7861CAD3A1D542ABC /* PM5ForceCurveAssembler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PM5ForceCurveAssembler.swift; sourceTree = "<group>"; };
 		686D6D76B62A413FF3650619 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8E4C635B544BBE03F656CBAB /* ConnectedRowingDashboardSections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedRowingDashboardSections.swift; sourceTree = "<group>"; };
+		902824E304607793546D961E /* ForceCurveModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceCurveModels.swift; sourceTree = "<group>"; };
 		91BE27EE27B4CF3364440AB9 /* StatusBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBadge.swift; sourceTree = "<group>"; };
 		A03A9D7042861FC6815352E4 /* PM5Discovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PM5Discovery.swift; sourceTree = "<group>"; };
 		A0840BCC3F9443B4A852F47E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -56,6 +65,7 @@
 		A86DA1173A1C0DCB57EB22FE /* RowerGameCenter.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RowerGameCenter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC1E9BAF3AB6F6E407CF4954 /* PM5BluetoothManager+Central.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PM5BluetoothManager+Central.swift"; sourceTree = "<group>"; };
 		B020C6FB364845AEDA10CF35 /* LaneSprintView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaneSprintView.swift; sourceTree = "<group>"; };
+		B3208EFE6158DDDC3201499E /* StrokeShapeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeShapeView.swift; sourceTree = "<group>"; };
 		BB556273504536F68DD597F1 /* DisconnectedRowingDashboardSections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisconnectedRowingDashboardSections.swift; sourceTree = "<group>"; };
 		BE6D443167810A906DD7E458 /* BluetoothStateLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothStateLabel.swift; sourceTree = "<group>"; };
 		C5F62E4A64E1605F67DD3379 /* PowerBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerBar.swift; sourceTree = "<group>"; };
@@ -135,15 +145,18 @@
 			children = (
 				8E4C635B544BBE03F656CBAB /* ConnectedRowingDashboardSections.swift */,
 				BB556273504536F68DD597F1 /* DisconnectedRowingDashboardSections.swift */,
+				902824E304607793546D961E /* ForceCurveModels.swift */,
 				5F333C0F71556AEAE4D51BAC /* PM5BluetoothManager.swift */,
 				AC1E9BAF3AB6F6E407CF4954 /* PM5BluetoothManager+Central.swift */,
 				A0CACAA4AC0EF3E3C229076D /* PM5BluetoothManager+Peripheral.swift */,
 				A675868BC79243AE97F82FFD /* PM5DeviceRow.swift */,
 				A03A9D7042861FC6815352E4 /* PM5Discovery.swift */,
+				67C3BAF7861CAD3A1D542ABC /* PM5ForceCurveAssembler.swift */,
 				F2F6A2B902A58DF1A4FF5CCA /* PM5Parsers.swift */,
 				DEF0DDBCB17B8616716726B0 /* PM5Protocol.swift */,
 				F4F34610BD1829725D0B183C /* RowingDashboardView.swift */,
 				CDCDD32ABD1CE43B7DC93034 /* RowingModels.swift */,
+				28C20B14697D1351E0322AFE /* StrokeShapeAnalyzer.swift */,
 			);
 			path = Rowing;
 			sourceTree = "<group>";
@@ -171,6 +184,8 @@
 				58E580F372CC5190AA7D2C87 /* CadenceLockView.swift */,
 				38EFCB501A8C3F4D97D6EB67 /* LaneSprintTrackView.swift */,
 				B020C6FB364845AEDA10CF35 /* LaneSprintView.swift */,
+				1F15A25325603A93C6A3F3E4 /* StrokeShapeGraphView.swift */,
+				B3208EFE6158DDDC3201499E /* StrokeShapeView.swift */,
 			);
 			path = Games;
 			sourceTree = "<group>";
@@ -263,6 +278,7 @@
 				0FE8F6361EE64E6614E9A506 /* ConnectedRowingDashboardSections.swift in Sources */,
 				01DFCAFB795C410BDFA9CD94 /* Data+LittleEndian.swift in Sources */,
 				228902EF195608FA5538741F /* DisconnectedRowingDashboardSections.swift in Sources */,
+				9E7A614DC9D440EB7A577992 /* ForceCurveModels.swift in Sources */,
 				50643CC203C0E26F720CDFD7 /* LaneSprintTrackView.swift in Sources */,
 				077CBD82479E702A48705D71 /* LaneSprintView.swift in Sources */,
 				3C475F7386D7FD79B7439A8F /* MetricTile.swift in Sources */,
@@ -271,6 +287,7 @@
 				A40F8B012E60060E6447949C /* PM5BluetoothManager.swift in Sources */,
 				5A994A9C581820A58CC8DE57 /* PM5DeviceRow.swift in Sources */,
 				3E2E97DFD54EDFCA673D4BC0 /* PM5Discovery.swift in Sources */,
+				1AD95601B8064E7ABB0E124B /* PM5ForceCurveAssembler.swift in Sources */,
 				16DF7E04B35B897097F3E4E8 /* PM5Parsers.swift in Sources */,
 				1828ACF061887A09602B01DA /* PM5Protocol.swift in Sources */,
 				EE089BD6ECC820313011CFC4 /* PanelCard.swift in Sources */,
@@ -280,6 +297,9 @@
 				211B1549D049501792764001 /* RowingDashboardView.swift in Sources */,
 				D54E161DCDC95760F8A25008 /* RowingModels.swift in Sources */,
 				0D0148CA2A62EBEADCB89032 /* StatusBadge.swift in Sources */,
+				0B73EAB16F5E65317C75C1EB /* StrokeShapeAnalyzer.swift in Sources */,
+				1BEC4EFBA359793036439FBB /* StrokeShapeGraphView.swift in Sources */,
+				739FFF5E62B1F9B5FDC5D472 /* StrokeShapeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
