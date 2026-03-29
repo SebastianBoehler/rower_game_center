@@ -18,11 +18,17 @@ final class PM5BluetoothManager: NSObject {
     var latestForceCurve: ForceCurveStroke?
     var recentForceCurves: [ForceCurveStroke] = []
 
-    @ObservationIgnored private var peripherals: [UUID: CBPeripheral] = [:]
-    @ObservationIgnored private var connectedPeripheral: CBPeripheral?
-    @ObservationIgnored private var forceCurveCharacteristic: CBCharacteristic?
-    @ObservationIgnored private var forceCurveAssembler = PM5ForceCurveAssembler()
-    @ObservationIgnored private let centralManager: CBCentralManager
+    @ObservationIgnored var peripherals: [UUID: CBPeripheral] = [:]
+    @ObservationIgnored var connectedPeripheral: CBPeripheral?
+    @ObservationIgnored var controlTransmitCharacteristic: CBCharacteristic?
+    @ObservationIgnored var controlReceiveCharacteristic: CBCharacteristic?
+    @ObservationIgnored var forceCurveCharacteristic: CBCharacteristic?
+    @ObservationIgnored var forceCurveAssembler = PM5ForceCurveAssembler()
+    @ObservationIgnored var controlFrameDecoder = PM5CSafeFrameDecoder()
+    @ObservationIgnored var pendingControlForceCurveSamples: [Double] = []
+    @ObservationIgnored var pendingControlForceCurvePeak = 0.0
+    @ObservationIgnored var controlForceCurveRequestInFlight = false
+    @ObservationIgnored let centralManager: CBCentralManager
 
     override init() {
         centralManager = CBCentralManager(delegate: nil, queue: nil)
@@ -152,8 +158,16 @@ final class PM5BluetoothManager: NSObject {
     }
 
     func handleNotification(from characteristic: CBCharacteristic) {
-        guard let value = characteristic.value,
-              let parsedNotification = PM5Parsers.notification(for: characteristic.uuid, data: value) else {
+        guard let value = characteristic.value else {
+            return
+        }
+
+        if characteristic.uuid.uuidString.uppercased() == PM5UUIDs.receiveFromPM {
+            handleControlResponse(value)
+            return
+        }
+
+        guard let parsedNotification = PM5Parsers.notification(for: characteristic.uuid, data: value) else {
             return
         }
 
@@ -168,11 +182,7 @@ final class PM5BluetoothManager: NSObject {
             )
         case .forceCurve(let packet):
             guard let stroke = forceCurveAssembler.ingest(packet) else { return }
-            guard stroke.samples != latestForceCurve?.samples else { return }
-
-            latestForceCurve = stroke
-            recentForceCurves.append(stroke)
-            recentForceCurves = Array(recentForceCurves.suffix(5))
+            applyForceCurveStroke(stroke)
         }
     }
 
@@ -183,11 +193,22 @@ final class PM5BluetoothManager: NSObject {
                 characteristics: ($0.characteristics ?? []).map { $0.uuid.uuidString.lowercased() }
             )
         }
-        supportsForceCurve = PM5Discovery.hasCharacteristic(
+        let hasForceCurveCharacteristic = PM5Discovery.hasCharacteristic(
             serviceUUID: PM5UUIDs.rowingService,
             characteristicUUID: PM5UUIDs.forceCurveData,
             in: discoveredServices
         )
+        let hasControlTransport = PM5Discovery.hasCharacteristic(
+            serviceUUID: PM5UUIDs.controlService,
+            characteristicUUID: PM5UUIDs.transmitToPM,
+            in: discoveredServices
+        ) && PM5Discovery.hasCharacteristic(
+            serviceUUID: PM5UUIDs.controlService,
+            characteristicUUID: PM5UUIDs.receiveFromPM,
+            in: discoveredServices
+        )
+
+        supportsForceCurve = hasForceCurveCharacteristic || hasControlTransport
     }
 
     func validateNotificationCoverage(for peripheral: CBPeripheral) {
@@ -196,8 +217,11 @@ final class PM5BluetoothManager: NSObject {
 
         replaceDiscoveredServices(from: peripheral)
         let matched = PM5Discovery.availableNotificationDefinitions(in: discoveredServices)
+        let hasRowingMetricStream = matched.contains { definition in
+            definition.serviceUUID == PM5UUIDs.rowingService
+        }
 
-        if matched.isEmpty {
+        if !hasRowingMetricStream {
             setError("Connected, but none of the expected PM5 metric characteristics were present. Confirm the monitor is advertising the rowing service.")
         }
     }
@@ -221,38 +245,6 @@ final class PM5BluetoothManager: NSObject {
         if errorMessage == nil {
             connectionPhase = .idle
         }
-    }
-
-    func registerDiscoveredCharacteristic(_ characteristic: CBCharacteristic) {
-        if characteristic.uuid.uuidString.uppercased() == PM5UUIDs.forceCurveData {
-            forceCurveCharacteristic = characteristic
-        }
-    }
-
-    private func resetForceCurveState() {
-        supportsForceCurve = false
-        latestForceCurve = nil
-        recentForceCurves = []
-        forceCurveCharacteristic = nil
-        forceCurveAssembler.reset()
-    }
-
-    private func requestForceCurveIfNeeded(
-        previousStrokeState: Int?,
-        newStrokeState: Int?
-    ) {
-        guard supportsForceCurve else { return }
-        guard previousStrokeState != PM5StrokeState.recovery,
-              newStrokeState == PM5StrokeState.recovery else {
-            return
-        }
-
-        guard let forceCurveCharacteristic,
-              forceCurveCharacteristic.properties.contains(.read) else {
-            return
-        }
-
-        connectedPeripheral?.readValue(for: forceCurveCharacteristic)
     }
 
     func bluetoothStateErrorMessage(for state: CBManagerState) -> String? {
@@ -287,8 +279,4 @@ final class PM5BluetoothManager: NSObject {
         }
         .contains(message)
     }
-}
-
-private enum PM5StrokeState {
-    static let recovery = 4
 }

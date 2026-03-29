@@ -2,7 +2,10 @@
 
 enum PM5UUIDs {
     static let deviceService = "CE060000-43E5-11E4-916C-0800200C9A66"
+    static let controlService = "CE060020-43E5-11E4-916C-0800200C9A66"
     static let rowingService = "CE060030-43E5-11E4-916C-0800200C9A66"
+    static let transmitToPM = "CE060021-43E5-11E4-916C-0800200C9A66"
+    static let receiveFromPM = "CE060022-43E5-11E4-916C-0800200C9A66"
     static let rowingStatus = "CE060031-43E5-11E4-916C-0800200C9A66"
     static let extraStatus1 = "CE060032-43E5-11E4-916C-0800200C9A66"
     static let extraStatus2 = "CE060033-43E5-11E4-916C-0800200C9A66"
@@ -25,6 +28,11 @@ enum PM5Protocol {
     static let nameHints = ["concept2", "pm5", "rowerg", "erg"]
 
     static let notificationDefinitions = [
+        PM5NotificationDefinition(
+            serviceUUID: PM5UUIDs.controlService,
+            characteristicUUID: PM5UUIDs.receiveFromPM,
+            label: "Receive from PM"
+        ),
         PM5NotificationDefinition(
             serviceUUID: PM5UUIDs.rowingService,
             characteristicUUID: PM5UUIDs.rowingStatus,

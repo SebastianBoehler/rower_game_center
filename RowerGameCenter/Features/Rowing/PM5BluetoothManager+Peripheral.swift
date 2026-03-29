@@ -67,4 +67,19 @@ extension PM5BluetoothManager: @MainActor CBPeripheralDelegate {
             setError("Failed to subscribe to \(characteristic.uuid.uuidString): \(error.localizedDescription)")
         }
     }
+
+    func peripheral(
+        _ peripheral: CBPeripheral,
+        didWriteValueFor characteristic: CBCharacteristic,
+        error: (any Error)?
+    ) {
+        guard characteristic.uuid.uuidString.uppercased() == PM5UUIDs.transmitToPM else {
+            return
+        }
+
+        if let error {
+            controlForceCurveRequestInFlight = false
+            setError("Failed to request PM5 force curve data: \(error.localizedDescription)")
+        }
+    }
 }

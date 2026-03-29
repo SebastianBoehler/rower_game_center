@@ -33,15 +33,19 @@
 		6732C932ED34324C081AF7E8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 686D6D76B62A413FF3650619 /* LaunchScreen.storyboard */; };
 		6E56C338963D6835D9F1F9DE /* PowerBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5F62E4A64E1605F67DD3379 /* PowerBar.swift */; };
 		739FFF5E62B1F9B5FDC5D472 /* StrokeShapeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3208EFE6158DDDC3201499E /* StrokeShapeView.swift */; };
+		835228C8E761BC931D3C8512 /* PM5CSafeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEE519F247796A8408338FD /* PM5CSafeProtocol.swift */; };
 		9B1853ED1FF54B5CEA226AF8 /* BluetoothStateLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6D443167810A906DD7E458 /* BluetoothStateLabel.swift */; };
 		9E7A614DC9D440EB7A577992 /* ForceCurveModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902824E304607793546D961E /* ForceCurveModels.swift */; };
 		A40F8B012E60060E6447949C /* PM5BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F333C0F71556AEAE4D51BAC /* PM5BluetoothManager.swift */; };
+		ADB12562564ACE0CFAA46BEB /* PM5CSafeFrameDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0BCB3FA2E1589D0C0AF6F9B /* PM5CSafeFrameDecoder.swift */; };
+		CFAC5222B31A11B110EBCBAA /* PM5BluetoothManager+ForceCurve.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B0B9941439FC1161C17195 /* PM5BluetoothManager+ForceCurve.swift */; };
 		D54E161DCDC95760F8A25008 /* RowingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDCDD32ABD1CE43B7DC93034 /* RowingModels.swift */; };
 		DDFD8BE67519F7175EF71238 /* RowerGameCenterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC49E0BE8EA69541273F30FA /* RowerGameCenterApp.swift */; };
 		EE089BD6ECC820313011CFC4 /* PanelCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463CDEB3CFA37781517CA9E2 /* PanelCard.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		14B0B9941439FC1161C17195 /* PM5BluetoothManager+ForceCurve.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PM5BluetoothManager+ForceCurve.swift"; sourceTree = "<group>"; };
 		1F15A25325603A93C6A3F3E4 /* StrokeShapeGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeShapeGraphView.swift; sourceTree = "<group>"; };
 		28C20B14697D1351E0322AFE /* StrokeShapeAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeShapeAnalyzer.swift; sourceTree = "<group>"; };
 		38EFCB501A8C3F4D97D6EB67 /* LaneSprintTrackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaneSprintTrackView.swift; sourceTree = "<group>"; };
@@ -62,16 +66,18 @@
 		A0840BCC3F9443B4A852F47E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A0CACAA4AC0EF3E3C229076D /* PM5BluetoothManager+Peripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PM5BluetoothManager+Peripheral.swift"; sourceTree = "<group>"; };
 		A675868BC79243AE97F82FFD /* PM5DeviceRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PM5DeviceRow.swift; sourceTree = "<group>"; };
-		A86DA1173A1C0DCB57EB22FE /* RowerGameCenter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RowerGameCenter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A86DA1173A1C0DCB57EB22FE /* RowerGameCenter.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RowerGameCenter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC1E9BAF3AB6F6E407CF4954 /* PM5BluetoothManager+Central.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PM5BluetoothManager+Central.swift"; sourceTree = "<group>"; };
 		B020C6FB364845AEDA10CF35 /* LaneSprintView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaneSprintView.swift; sourceTree = "<group>"; };
 		B3208EFE6158DDDC3201499E /* StrokeShapeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeShapeView.swift; sourceTree = "<group>"; };
 		BB556273504536F68DD597F1 /* DisconnectedRowingDashboardSections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisconnectedRowingDashboardSections.swift; sourceTree = "<group>"; };
 		BE6D443167810A906DD7E458 /* BluetoothStateLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothStateLabel.swift; sourceTree = "<group>"; };
+		C0BCB3FA2E1589D0C0AF6F9B /* PM5CSafeFrameDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PM5CSafeFrameDecoder.swift; sourceTree = "<group>"; };
 		C5F62E4A64E1605F67DD3379 /* PowerBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerBar.swift; sourceTree = "<group>"; };
 		CC49E0BE8EA69541273F30FA /* RowerGameCenterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowerGameCenterApp.swift; sourceTree = "<group>"; };
 		CDCDD32ABD1CE43B7DC93034 /* RowingModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowingModels.swift; sourceTree = "<group>"; };
 		D0B6817BBF5C7444E214C576 /* Data+LittleEndian.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+LittleEndian.swift"; sourceTree = "<group>"; };
+		DDEE519F247796A8408338FD /* PM5CSafeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PM5CSafeProtocol.swift; sourceTree = "<group>"; };
 		DEF0DDBCB17B8616716726B0 /* PM5Protocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PM5Protocol.swift; sourceTree = "<group>"; };
 		F2F6A2B902A58DF1A4FF5CCA /* PM5Parsers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PM5Parsers.swift; sourceTree = "<group>"; };
 		F3B568F9D332284F5C2631B8 /* MetricTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricTile.swift; sourceTree = "<group>"; };
@@ -148,7 +154,10 @@
 				902824E304607793546D961E /* ForceCurveModels.swift */,
 				5F333C0F71556AEAE4D51BAC /* PM5BluetoothManager.swift */,
 				AC1E9BAF3AB6F6E407CF4954 /* PM5BluetoothManager+Central.swift */,
+				14B0B9941439FC1161C17195 /* PM5BluetoothManager+ForceCurve.swift */,
 				A0CACAA4AC0EF3E3C229076D /* PM5BluetoothManager+Peripheral.swift */,
+				C0BCB3FA2E1589D0C0AF6F9B /* PM5CSafeFrameDecoder.swift */,
+				DDEE519F247796A8408338FD /* PM5CSafeProtocol.swift */,
 				A675868BC79243AE97F82FFD /* PM5DeviceRow.swift */,
 				A03A9D7042861FC6815352E4 /* PM5Discovery.swift */,
 				67C3BAF7861CAD3A1D542ABC /* PM5ForceCurveAssembler.swift */,
@@ -283,8 +292,11 @@
 				077CBD82479E702A48705D71 /* LaneSprintView.swift in Sources */,
 				3C475F7386D7FD79B7439A8F /* MetricTile.swift in Sources */,
 				5720A2FA0EB9966C451D6F30 /* PM5BluetoothManager+Central.swift in Sources */,
+				CFAC5222B31A11B110EBCBAA /* PM5BluetoothManager+ForceCurve.swift in Sources */,
 				3C310AC6E0A7C0D329CA2C4E /* PM5BluetoothManager+Peripheral.swift in Sources */,
 				A40F8B012E60060E6447949C /* PM5BluetoothManager.swift in Sources */,
+				ADB12562564ACE0CFAA46BEB /* PM5CSafeFrameDecoder.swift in Sources */,
+				835228C8E761BC931D3C8512 /* PM5CSafeProtocol.swift in Sources */,
 				5A994A9C581820A58CC8DE57 /* PM5DeviceRow.swift in Sources */,
 				3E2E97DFD54EDFCA673D4BC0 /* PM5Discovery.swift in Sources */,
 				1AD95601B8064E7ABB0E124B /* PM5ForceCurveAssembler.swift in Sources */,
@@ -313,7 +325,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8P4NW2AQ75;
 				INFOPLIST_FILE = RowerGameCenter/Support/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -335,7 +346,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8P4NW2AQ75;
 				INFOPLIST_FILE = RowerGameCenter/Support/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
