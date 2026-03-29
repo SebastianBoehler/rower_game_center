@@ -105,13 +105,10 @@ struct TempleErgState {
     var recentStrokeRates: [Int] = []
     var recentRecoveryRatios: [Double] = []
     var lastSpawnedAction: TempleErgAction?
+    var lastSuccessfulAction: TempleErgAction?
     var currentReading: TempleErgActionReading = .neutral
     var currentHint = "Find a steady rhythm to keep the run alive."
     var isGameOver = false
-
-    var hasActiveObstacles: Bool {
-        !obstacles.isEmpty
-    }
 }
 
 struct TempleErgRunSummary {

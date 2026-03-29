@@ -70,6 +70,7 @@ enum TempleErgEngine {
 
                 if state.obstacles[index].action == currentAction {
                     state.obstacles[index].wasSuccessful = true
+                    state.lastSuccessfulAction = state.obstacles[index].action
                     state.combo += 1
                     state.bestCombo = max(state.bestCombo, state.combo)
                     state.clearedObstacles += 1
@@ -167,6 +168,10 @@ enum TempleErgEngine {
     }
 
     private static func dominantAction(from state: TempleErgState) -> TempleErgAction? {
+        if let lastSuccessfulAction = state.lastSuccessfulAction {
+            return lastSuccessfulAction
+        }
+
         if let currentAction = resolvedAction(from: state.currentReading) {
             return currentAction
         }
