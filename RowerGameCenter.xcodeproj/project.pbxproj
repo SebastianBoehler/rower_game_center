@@ -62,7 +62,7 @@
 		A0840BCC3F9443B4A852F47E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A0CACAA4AC0EF3E3C229076D /* PM5BluetoothManager+Peripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PM5BluetoothManager+Peripheral.swift"; sourceTree = "<group>"; };
 		A675868BC79243AE97F82FFD /* PM5DeviceRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PM5DeviceRow.swift; sourceTree = "<group>"; };
-		A86DA1173A1C0DCB57EB22FE /* RowerGameCenter.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RowerGameCenter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A86DA1173A1C0DCB57EB22FE /* RowerGameCenter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RowerGameCenter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC1E9BAF3AB6F6E407CF4954 /* PM5BluetoothManager+Central.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PM5BluetoothManager+Central.swift"; sourceTree = "<group>"; };
 		B020C6FB364845AEDA10CF35 /* LaneSprintView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaneSprintView.swift; sourceTree = "<group>"; };
 		B3208EFE6158DDDC3201499E /* StrokeShapeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeShapeView.swift; sourceTree = "<group>"; };
@@ -313,6 +313,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8P4NW2AQ75;
 				INFOPLIST_FILE = RowerGameCenter/Support/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -334,6 +335,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8P4NW2AQ75;
 				INFOPLIST_FILE = RowerGameCenter/Support/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (

@@ -4,9 +4,22 @@ extension PM5BluetoothManager: @MainActor CBCentralManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         bluetoothStateDescription = central.state.label
 
-        if central.state != .poweredOn {
-            stopScan()
-            setError("Bluetooth is \(central.state.label.lowercased()). Enable Bluetooth to use a real PM5 connection.")
+        if central.state == .poweredOn {
+            if let errorMessage, isBluetoothStateError(errorMessage) {
+                clearError()
+
+                if connectedDeviceID == nil, !isScanning {
+                    connectionPhase = .idle
+                }
+            }
+
+            return
+        }
+
+        stopScan()
+
+        if let message = bluetoothStateErrorMessage(for: central.state) {
+            setError(message)
         }
     }
 

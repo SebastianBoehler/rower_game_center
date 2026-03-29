@@ -32,7 +32,9 @@ final class PM5BluetoothManager: NSObject {
 
     func startScan() {
         guard centralManager.state == .poweredOn else {
-            setError("Bluetooth must be powered on before scanning for a PM5.")
+            if let message = bluetoothStateErrorMessage(for: centralManager.state) {
+                setError(message)
+            }
             return
         }
 
@@ -251,6 +253,39 @@ final class PM5BluetoothManager: NSObject {
         }
 
         connectedPeripheral?.readValue(for: forceCurveCharacteristic)
+    }
+
+    func bluetoothStateErrorMessage(for state: CBManagerState) -> String? {
+        switch state {
+        case .poweredOn:
+            return nil
+        case .unknown:
+            return "Bluetooth is still initializing. Try scanning again in a moment."
+        case .resetting:
+            return "Bluetooth is resetting. Try scanning again in a moment."
+        case .unsupported:
+            return "This device does not support Bluetooth Low Energy scanning."
+        case .unauthorized:
+            return "Bluetooth access is not allowed for this app. Allow Bluetooth in Settings > Privacy & Security > Bluetooth."
+        case .poweredOff:
+            return "Bluetooth is turned off. Enable Bluetooth to use a real PM5 connection."
+        @unknown default:
+            return "Bluetooth is unavailable right now."
+        }
+    }
+
+    func isBluetoothStateError(_ message: String) -> Bool {
+        [
+            CBManagerState.unknown,
+            .resetting,
+            .unsupported,
+            .unauthorized,
+            .poweredOff,
+        ]
+        .compactMap { state in
+            bluetoothStateErrorMessage(for: state)
+        }
+        .contains(message)
     }
 }
 

@@ -22,6 +22,7 @@ targets:
     info:
       path: RowerGameCenter/Support/Info.plist
       properties:
+        NSBluetoothAlwaysUsageDescription: Rower Game Center uses Bluetooth to find and connect to your Concept2 PM5 monitor.
         UILaunchStoryboardName: LaunchScreen
     settings:
       base:
