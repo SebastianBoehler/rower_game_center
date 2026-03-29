@@ -8,6 +8,7 @@ final class PM5BluetoothManager: NSObject {
     var metrics = RowingMetrics()
     var devices: [PM5DeviceSummary] = []
     var discoveredServices: [PM5DiscoveredServiceSnapshot] = []
+    var diagnostics: [PM5DiagnosticEntry] = []
     var connectionPhase: RowingConnectionPhase = .idle
     var bluetoothStateDescription = "Unknown"
     var isScanning = false
@@ -28,12 +29,15 @@ final class PM5BluetoothManager: NSObject {
     @ObservationIgnored var pendingControlForceCurveSamples: [Double] = []
     @ObservationIgnored var pendingControlForceCurvePeak = 0.0
     @ObservationIgnored var controlForceCurveRequestInFlight = false
+    @ObservationIgnored var hasLoggedLiveMetrics = false
+    @ObservationIgnored var seenNotificationCharacteristicUUIDs: Set<String> = []
     @ObservationIgnored let centralManager: CBCentralManager
 
     override init() {
         centralManager = CBCentralManager(delegate: nil, queue: nil)
         super.init()
         centralManager.delegate = self
+        logNotice("Bluetooth manager initialized.", category: "lifecycle")
     }
 
     func startScan() {
@@ -49,6 +53,7 @@ final class PM5BluetoothManager: NSObject {
         peripherals = [:]
         isScanning = true
         connectionPhase = .scanning
+        logNotice("Started scanning for nearby PM5 monitors.", category: "scan")
 
         centralManager.scanForPeripherals(withServices: nil, options: [
             CBCentralManagerScanOptionAllowDuplicatesKey: false,
@@ -57,6 +62,9 @@ final class PM5BluetoothManager: NSObject {
 
     func stopScan() {
         centralManager.stopScan()
+        if isScanning {
+            logNotice("Stopped scanning for nearby PM5 monitors.", category: "scan")
+        }
         isScanning = false
 
         if connectedPeripheral == nil {
@@ -79,6 +87,7 @@ final class PM5BluetoothManager: NSObject {
         errorMessage = nil
         connectionPhase = .connecting
         connectedPeripheral = peripheral
+        logNotice("Connecting to \(peripheral.name ?? "PM5") (\(deviceID.uuidString.lowercased())).", category: "connection")
         peripheral.delegate = self
         centralManager.connect(peripheral)
     }
@@ -90,23 +99,8 @@ final class PM5BluetoothManager: NSObject {
         }
 
         connectionPhase = .disconnecting
+        logNotice("Disconnect requested for \(connectedDeviceName ?? connectedPeripheral.name ?? "PM5").", category: "connection")
         centralManager.cancelPeripheralConnection(connectedPeripheral)
-    }
-
-    func clearError() {
-        errorMessage = nil
-    }
-
-    var connectionSummary: String {
-        if metrics.connected {
-            return "Connected to \(metrics.deviceName ?? "PM5")"
-        }
-
-        if isScanning {
-            return "Scanning for nearby Concept2 PM5 monitors"
-        }
-
-        return "No PM5 connected"
     }
 
     func handleConnectedPeripheral(_ peripheral: CBPeripheral) {
@@ -119,6 +113,9 @@ final class PM5BluetoothManager: NSObject {
         connectionPhase = .connected
         discoveredServices = []
         resetForceCurveState()
+        hasLoggedLiveMetrics = false
+        seenNotificationCharacteristicUUIDs = []
+        logNotice("Connected to \(connectedDeviceName ?? "PM5"). Discovering services.", category: "connection")
         peripheral.delegate = self
         peripheral.discoverServices(nil)
     }
@@ -133,6 +130,8 @@ final class PM5BluetoothManager: NSObject {
 
         if let error {
             setError("PM5 disconnected: \(error.localizedDescription)")
+        } else {
+            logNotice("Disconnected from \(deviceName ?? "PM5").", category: "connection")
         }
     }
 
@@ -154,6 +153,13 @@ final class PM5BluetoothManager: NSObject {
         } else {
             devices.append(summary)
             devices.sort { $0.name.localizedCompare($1.name) == .orderedAscending }
+            let advertisedServices = summary.serviceUUIDs.isEmpty
+                ? "none"
+                : summary.serviceUUIDs.joined(separator: ", ")
+            logInfo(
+                "Discovered \(summary.name) at RSSI \(summary.rssi) with advertised services: \(advertisedServices).",
+                category: "discovery"
+            )
         }
     }
 
@@ -161,6 +167,8 @@ final class PM5BluetoothManager: NSObject {
         guard let value = characteristic.value else {
             return
         }
+
+        logFirstNotificationIfNeeded(from: characteristic, byteCount: value.count)
 
         if characteristic.uuid.uuidString.uppercased() == PM5UUIDs.receiveFromPM {
             handleControlResponse(value)
@@ -176,6 +184,10 @@ final class PM5BluetoothManager: NSObject {
             let previousStrokeState = metrics.strokeState
             metrics.apply(patch)
             metrics.deviceName = connectedDeviceName
+            if !hasLoggedLiveMetrics {
+                hasLoggedLiveMetrics = true
+                logNotice("Live rowing metrics are flowing from the PM5.", category: "telemetry")
+            }
             requestForceCurveIfNeeded(
                 previousStrokeState: previousStrokeState,
                 newStrokeState: patch.strokeState ?? metrics.strokeState
@@ -223,10 +235,18 @@ final class PM5BluetoothManager: NSObject {
 
         if !hasRowingMetricStream {
             setError("Connected, but none of the expected PM5 metric characteristics were present. Confirm the monitor is advertising the rowing service.")
+        } else {
+            logInfo(
+                "Resolved \(discoveredServices.count) PM5 services. Force curve support: \(supportsForceCurve ? "available" : "not exposed").",
+                category: "discovery"
+            )
         }
     }
 
     func setError(_ message: String) {
+        if errorMessage != message {
+            logError(message, category: "error")
+        }
         errorMessage = message
 
         if connectedPeripheral == nil {
@@ -240,43 +260,13 @@ final class PM5BluetoothManager: NSObject {
         connectedDeviceName = nil
         discoveredServices = []
         isScanning = false
+        hasLoggedLiveMetrics = false
+        seenNotificationCharacteristicUUIDs = []
         resetForceCurveState()
+        logInfo("Cleared PM5 connection state.", category: "connection")
 
         if errorMessage == nil {
             connectionPhase = .idle
         }
-    }
-
-    func bluetoothStateErrorMessage(for state: CBManagerState) -> String? {
-        switch state {
-        case .poweredOn:
-            return nil
-        case .unknown:
-            return "Bluetooth is still initializing. Try scanning again in a moment."
-        case .resetting:
-            return "Bluetooth is resetting. Try scanning again in a moment."
-        case .unsupported:
-            return "This device does not support Bluetooth Low Energy scanning."
-        case .unauthorized:
-            return "Bluetooth access is not allowed for this app. Allow Bluetooth in Settings > Privacy & Security > Bluetooth."
-        case .poweredOff:
-            return "Bluetooth is turned off. Enable Bluetooth to use a real PM5 connection."
-        @unknown default:
-            return "Bluetooth is unavailable right now."
-        }
-    }
-
-    func isBluetoothStateError(_ message: String) -> Bool {
-        [
-            CBManagerState.unknown,
-            .resetting,
-            .unsupported,
-            .unauthorized,
-            .poweredOff,
-        ]
-        .compactMap { state in
-            bluetoothStateErrorMessage(for: state)
-        }
-        .contains(message)
     }
 }

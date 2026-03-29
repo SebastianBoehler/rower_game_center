@@ -8,6 +8,10 @@ extension PM5BluetoothManager: @MainActor CBPeripheralDelegate {
         }
 
         replaceDiscoveredServices(from: peripheral)
+        logInfo(
+            "Discovered \(peripheral.services?.count ?? 0) services on \(peripheral.name ?? "PM5").",
+            category: "discovery"
+        )
 
         for service in peripheral.services ?? [] {
             peripheral.discoverCharacteristics(nil, for: service)
@@ -25,6 +29,10 @@ extension PM5BluetoothManager: @MainActor CBPeripheralDelegate {
         }
 
         replaceDiscoveredServices(from: peripheral)
+        logInfo(
+            "Discovered \(service.characteristics?.count ?? 0) characteristics for service \(service.uuid.uuidString.lowercased()).",
+            category: "discovery"
+        )
 
         let matchingDefinitions = PM5Protocol.notificationDefinitions.filter {
             $0.serviceUUID == service.uuid.uuidString.uppercased()
@@ -65,6 +73,11 @@ extension PM5BluetoothManager: @MainActor CBPeripheralDelegate {
     ) {
         if let error {
             setError("Failed to subscribe to \(characteristic.uuid.uuidString): \(error.localizedDescription)")
+        } else if characteristic.isNotifying {
+            logInfo(
+                "Subscribed to \(characteristic.uuid.uuidString.lowercased()).",
+                category: "subscription"
+            )
         }
     }
 
@@ -80,6 +93,8 @@ extension PM5BluetoothManager: @MainActor CBPeripheralDelegate {
         if let error {
             controlForceCurveRequestInFlight = false
             setError("Failed to request PM5 force curve data: \(error.localizedDescription)")
+        } else {
+            logInfo("Sent PM control request for force-curve data.", category: "forceCurve")
         }
     }
 }

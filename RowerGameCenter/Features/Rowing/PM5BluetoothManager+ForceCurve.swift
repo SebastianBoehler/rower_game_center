@@ -6,10 +6,13 @@ extension PM5BluetoothManager {
         switch characteristic.uuid.uuidString.uppercased() {
         case PM5UUIDs.transmitToPM:
             controlTransmitCharacteristic = characteristic
+            logInfo("Found PM control transmit characteristic.", category: "discovery")
         case PM5UUIDs.receiveFromPM:
             controlReceiveCharacteristic = characteristic
+            logInfo("Found PM control receive characteristic.", category: "discovery")
         case PM5UUIDs.forceCurveData:
             forceCurveCharacteristic = characteristic
+            logInfo("Found rowing-service force-curve characteristic.", category: "discovery")
         default:
             break
         }
@@ -40,12 +43,14 @@ extension PM5BluetoothManager {
         }
 
         if controlTransmitCharacteristic != nil, controlReceiveCharacteristic != nil {
+            logInfo("Recovery detected. Requesting force curve via PM control service.", category: "forceCurve")
             requestControlForceCurveChunk()
             return
         }
 
         if let forceCurveCharacteristic,
            forceCurveCharacteristic.properties.contains(.read) {
+            logInfo("Recovery detected. Reading force curve via rowing service.", category: "forceCurve")
             connectedPeripheral?.readValue(for: forceCurveCharacteristic)
         }
     }
@@ -56,6 +61,7 @@ extension PM5BluetoothManager {
         latestForceCurve = stroke
         recentForceCurves.append(stroke)
         recentForceCurves = Array(recentForceCurves.suffix(5))
+        logNotice("Captured force curve with \(stroke.samples.count) samples.", category: "forceCurve")
     }
 
     private func requestControlForceCurveChunk() {
@@ -83,9 +89,11 @@ extension PM5BluetoothManager {
         guard !frames.isEmpty else { return }
 
         controlForceCurveRequestInFlight = false
+        logInfo("Received \(frames.count) PM control frame(s).", category: "forceCurve")
 
         for frame in frames {
             guard let chunk = PM5CSafeProtocol.parseForceCurveResponse(from: frame) else {
+                logInfo("Ignored a PM control frame that was not force-curve data.", category: "forceCurve")
                 continue
             }
 
@@ -95,12 +103,17 @@ extension PM5BluetoothManager {
 
     private func handleControlForceCurveChunk(_ chunk: PM5CSafeForceCurveChunk) {
         if chunk.bytesReturned == 0 {
+            logInfo("Force-curve transfer returned 0 bytes. Finalizing stroke.", category: "forceCurve")
             finalizeControlForceCurveIfNeeded()
             return
         }
 
         var shouldFinalize = chunk.bytesReturned < 20
         var lastValue = pendingControlForceCurveSamples.last ?? 0
+        logInfo(
+            "Force-curve chunk returned \(chunk.bytesReturned) bytes and \(chunk.samples.count) samples.",
+            category: "forceCurve"
+        )
 
         for sample in chunk.samples {
             if pendingControlForceCurveSamples.count > 20,
@@ -127,12 +140,16 @@ extension PM5BluetoothManager {
     }
 
     private func finalizeControlForceCurveIfNeeded() {
+        let sampleCount = pendingControlForceCurveSamples.count
         defer {
             pendingControlForceCurveSamples = []
             pendingControlForceCurvePeak = 0
         }
 
-        guard pendingControlForceCurveSamples.count > 4 else { return }
+        guard sampleCount > 4 else {
+            logInfo("Discarded incomplete force curve with \(sampleCount) samples.", category: "forceCurve")
+            return
+        }
 
         applyForceCurveStroke(
             ForceCurveStroke(

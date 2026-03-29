@@ -3,6 +3,7 @@
 extension PM5BluetoothManager: @MainActor CBCentralManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         bluetoothStateDescription = central.state.label
+        logNotice("Bluetooth central state changed to \(central.state.label).", category: "bluetooth")
 
         if central.state == .poweredOn {
             if let errorMessage, isBluetoothStateError(errorMessage) {
@@ -46,6 +47,10 @@ extension PM5BluetoothManager: @MainActor CBCentralManagerDelegate {
         error: (any Error)?
     ) {
         clearConnectionState()
+        logError(
+            "Failed to connect to \(peripheral.name ?? "PM5"): \(error?.localizedDescription ?? "Unknown error").",
+            category: "connection"
+        )
         setError("Failed to connect to PM5: \(error?.localizedDescription ?? "Unknown error")")
     }
 

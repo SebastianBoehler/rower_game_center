@@ -2,6 +2,7 @@ import SwiftUI
 
 struct RowingDashboardView: View {
     @Environment(PM5BluetoothManager.self) private var bluetoothManager
+    @State private var showingDiagnostics = false
 
     var body: some View {
         ZStack {
@@ -28,6 +29,19 @@ struct RowingDashboardView: View {
         .navigationBarTitleDisplayMode(.large)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbarBackground(AppTheme.groupedBackground, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showingDiagnostics = true
+                } label: {
+                    Image(systemName: "list.bullet.rectangle.portrait")
+                }
+                .accessibilityLabel("Open diagnostics")
+            }
+        }
+        .sheet(isPresented: $showingDiagnostics) {
+            PM5DiagnosticsView()
+        }
     }
 
     private var overviewSection: some View {
