@@ -31,9 +31,16 @@ final class PM5BluetoothManager: NSObject {
     @ObservationIgnored var controlForceCurveRequestInFlight = false
     @ObservationIgnored var hasLoggedLiveMetrics = false
     @ObservationIgnored var seenNotificationCharacteristicUUIDs: Set<String> = []
+    @ObservationIgnored let healthSyncManager: HealthSyncManager?
+    @ObservationIgnored let recapManager: SessionRecapManager?
     @ObservationIgnored let centralManager: CBCentralManager
 
-    override init() {
+    init(
+        healthSyncManager: HealthSyncManager? = nil,
+        recapManager: SessionRecapManager? = nil
+    ) {
+        self.healthSyncManager = healthSyncManager
+        self.recapManager = recapManager
         centralManager = CBCentralManager(delegate: nil, queue: nil)
         super.init()
         centralManager.delegate = self
@@ -123,6 +130,15 @@ final class PM5BluetoothManager: NSObject {
     func handleDisconnection(for peripheral: CBPeripheral, error: Error?) {
         let deviceName = connectedDeviceName ?? peripheral.name
 
+        if shouldPresentUnsyncedWorkoutRecap(for: metrics) {
+            recapManager?.present(
+                SessionRecapBuilder.workout(
+                    metrics: metrics,
+                    savedToHealth: false
+                )
+            )
+        }
+        finishHealthWorkoutIfNeeded()
         clearConnectionState()
         metrics.connected = false
         metrics.deviceName = deviceName
@@ -192,6 +208,7 @@ final class PM5BluetoothManager: NSObject {
                 previousStrokeState: previousStrokeState,
                 newStrokeState: patch.strokeState ?? metrics.strokeState
             )
+            syncHealthMetricsIfNeeded()
         case .forceCurve(let packet):
             guard let stroke = forceCurveAssembler.ingest(packet) else { return }
             applyForceCurveStroke(stroke)
@@ -252,6 +269,12 @@ final class PM5BluetoothManager: NSObject {
         if connectedPeripheral == nil {
             connectionPhase = .error
         }
+    }
+
+    private func shouldPresentUnsyncedWorkoutRecap(for metrics: RowingMetrics) -> Bool {
+        guard healthSyncManager?.authorizationState != .authorized else { return false }
+        guard let distance = metrics.distance, distance >= 250 else { return false }
+        return metrics.elapsedTime != nil
     }
 
     func clearConnectionState() {

@@ -20,6 +20,10 @@
 	<string>1</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Rower Game Center uses Bluetooth to find and connect to your Concept2 PM5 monitor.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Rower Game Center syncs your rowing workouts from the PM5 into Apple Health so your training data stays together.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Rower Game Center writes rowing workouts, calories, distance, and heart rate to Apple Health.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 </dict>

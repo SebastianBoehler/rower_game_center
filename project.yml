@@ -23,12 +23,15 @@ targets:
       path: RowerGameCenter/Support/Info.plist
       properties:
         NSBluetoothAlwaysUsageDescription: Rower Game Center uses Bluetooth to find and connect to your Concept2 PM5 monitor.
+        NSHealthShareUsageDescription: Rower Game Center syncs your rowing workouts from the PM5 into Apple Health so your training data stays together.
+        NSHealthUpdateUsageDescription: Rower Game Center writes rowing workouts, calories, distance, and heart rate to Apple Health.
         UILaunchStoryboardName: LaunchScreen
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.sebastianboehler.rowergamecenter
         PRODUCT_NAME: RowerGameCenter
         CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_ENTITLEMENTS: RowerGameCenter/Support/RowerGameCenter.entitlements
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         TARGETED_DEVICE_FAMILY: 1
         SUPPORTS_MACCATALYST: NO

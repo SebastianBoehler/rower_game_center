@@ -2,8 +2,20 @@ import SwiftUI
 
 struct LaneSprintView: View {
     @Environment(PM5BluetoothManager.self) private var bluetoothManager
+    @Environment(SessionRecapManager.self) private var sessionRecapManager
 
     private let goalDistance = 500.0
+
+    @State private var attemptBaseline = SessionBaseline()
+    @State private var hasPresentedRecap = false
+
+    private var attemptDistance: Double {
+        attemptBaseline.distanceDelta(for: bluetoothManager.metrics) ?? 0
+    }
+
+    private var attemptElapsed: TimeInterval? {
+        attemptBaseline.elapsedDelta(for: bluetoothManager.metrics)
+    }
 
     var body: some View {
         Group {
@@ -16,6 +28,18 @@ struct LaneSprintView: View {
         .background(AppTheme.groupedBackground.ignoresSafeArea())
         .navigationTitle("Lane Sprint")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear(perform: captureBaselineIfNeeded)
+        .onChange(of: bluetoothManager.metrics.connected) { _, isConnected in
+            if isConnected {
+                captureBaselineIfNeeded()
+            } else {
+                resetAttempt()
+            }
+        }
+        .onChange(of: bluetoothManager.metrics.distance) { _, _ in
+            captureBaselineIfNeeded()
+            presentRecapIfNeeded()
+        }
     }
 
     private var liveSession: some View {
@@ -23,7 +47,7 @@ struct LaneSprintView: View {
             sessionHeader
 
             LaneSprintTrackView(
-                distance: bluetoothManager.metrics.distance,
+                distance: attemptDistance,
                 goalDistance: goalDistance
             )
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -62,12 +86,11 @@ struct LaneSprintView: View {
 
                 Spacer()
 
-                Text("500 m target")
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(.secondary)
+                Button("Restart Attempt", action: resetAttempt)
+                    .buttonStyle(.bordered)
             }
 
-            Text("Your boat advances only from live PM5 distance, keeping the playfield clear and glanceable while you row.")
+            Text("Your boat advances only from distance earned after this attempt started, so every 500 m run gets a clean finish and a shareable recap.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
@@ -76,10 +99,10 @@ struct LaneSprintView: View {
 
     private var sessionHUD: some View {
         HStack(spacing: 0) {
-            sessionMetric(title: "Distance", value: AppFormatters.distance(bluetoothManager.metrics.distance))
+            sessionMetric(title: "Distance", value: AppFormatters.distance(attemptDistance))
             Divider()
                 .frame(height: 34)
-            sessionMetric(title: "Pace", value: AppFormatters.pace(bluetoothManager.metrics.pace))
+            sessionMetric(title: "Pace", value: AppFormatters.pace(pace))
             Divider()
                 .frame(height: 34)
             sessionMetric(title: "Power", value: AppFormatters.watts(bluetoothManager.metrics.powerWatts))
@@ -108,5 +131,35 @@ struct LaneSprintView: View {
                 .lineLimit(1)
         }
         .frame(maxWidth: .infinity)
+    }
+
+    private var pace: TimeInterval? {
+        guard let attemptElapsed, attemptDistance > 0 else { return nil }
+        return attemptElapsed / attemptDistance * 500
+    }
+
+    private func captureBaselineIfNeeded() {
+        guard bluetoothManager.metrics.connected else { return }
+        attemptBaseline.captureIfNeeded(from: bluetoothManager.metrics)
+    }
+
+    private func presentRecapIfNeeded() {
+        guard bluetoothManager.metrics.connected else { return }
+        guard attemptDistance >= goalDistance, !hasPresentedRecap else { return }
+
+        hasPresentedRecap = true
+        sessionRecapManager.present(
+            SessionRecapBuilder.laneSprint(
+                metrics: bluetoothManager.metrics,
+                elapsedTime: attemptElapsed,
+                distanceMeters: attemptDistance
+            )
+        )
+    }
+
+    private func resetAttempt() {
+        attemptBaseline.reset()
+        hasPresentedRecap = false
+        captureBaselineIfNeeded()
     }
 }
