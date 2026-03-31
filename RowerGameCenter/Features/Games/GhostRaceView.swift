@@ -4,54 +4,41 @@ struct GhostRaceView: View {
     @Environment(PM5BluetoothManager.self) private var bluetoothManager
     @Environment(HealthSyncManager.self) private var healthSyncManager
     @Environment(SessionRecapManager.self) private var sessionRecapManager
-
     @State private var selectedDistance: StandardRaceDistance = .sprint500
     @State private var attemptBaseline = SessionBaseline()
     @State private var hasPresentedRecap = false
-
     private var selectedBenchmark: TrainingBenchmark? {
         healthSyncManager.ghostBenchmarks.first { $0.distance == selectedDistance }
     }
-
     private var attemptDistance: Double {
         attemptBaseline.distanceDelta(for: bluetoothManager.metrics) ?? 0
     }
-
     private var attemptElapsed: TimeInterval? {
         attemptBaseline.elapsedDelta(for: bluetoothManager.metrics)
     }
-
     private var playerProgress: Double {
         min(max(attemptDistance / selectedDistance.meters, 0), 1)
     }
-
     private var ghostProgress: Double {
         guard let bestTime = selectedBenchmark?.bestTime, bestTime > 0 else { return 0 }
         let elapsed = attemptElapsed ?? 0
         return min(max(elapsed / bestTime, 0), 1)
     }
-
     private var gapMeters: Double {
         guard let bestTime = selectedBenchmark?.bestTime, bestTime > 0 else { return 0 }
         let elapsed = attemptElapsed ?? 0
         let ghostDistance = min(selectedDistance.meters, selectedDistance.meters * elapsed / bestTime)
         return attemptDistance - ghostDistance
     }
-
+    private var attemptPace: TimeInterval? {
+        guard let attemptElapsed, attemptDistance > 0 else { return nil }
+        return attemptElapsed / attemptDistance * 500
+    }
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                headerCard
-                raceCard
-                summaryCard
-            }
-            .padding(.horizontal, 20)
-            .padding(.top, 20)
-            .padding(.bottom, bluetoothManager.metrics.connected ? 110 : 32)
-        }
-        .background(AppTheme.groupedBackground.ignoresSafeArea())
+        GeometryReader(content: content)
         .navigationTitle("Ghost Race")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(.hidden, for: .navigationBar)
         .onAppear(perform: captureBaselineIfNeeded)
         .onChange(of: bluetoothManager.metrics.connected) { _, isConnected in
             if isConnected {
@@ -67,155 +54,209 @@ struct GhostRaceView: View {
         .onChange(of: selectedDistance) { _, _ in
             resetAttempt()
         }
-        .safeAreaInset(edge: .bottom) {
-            if bluetoothManager.metrics.connected, selectedBenchmark?.bestTime != nil {
-                sessionHUD
-            }
+    }
+
+    private func content(_ geometry: GeometryProxy) -> some View {
+        ZStack {
+            backdrop
+            mainLayout(bottomInset: max(12, geometry.safeAreaInsets.bottom + 6))
+            overlayLayout(bottomInset: max(34, geometry.safeAreaInsets.bottom + 24))
         }
     }
 
-    private var headerCard: some View {
-        PanelCard(
-            title: "Personal Ghosts",
-            subtitle: "Race your own synced benchmark over standard Concept2 distances."
-        ) {
-            VStack(alignment: .leading, spacing: 14) {
-                Picker("Distance", selection: $selectedDistance) {
-                    ForEach(StandardRaceDistance.allCases) { distance in
-                        Text(distance.title).tag(distance)
-                    }
-                }
-                .pickerStyle(.segmented)
+    private func mainLayout(bottomInset: CGFloat) -> some View {
+        VStack(spacing: 14) {
+            GhostRaceControlStrip(
+                selectedDistance: $selectedDistance,
+                status: controlStatus,
+                benchmark: selectedBenchmark,
+                primaryActionTitle: primaryActionTitle,
+                primaryActionTint: primaryActionTint,
+                primaryAction: performPrimaryAction
+            )
 
-                Button("Restart Attempt", action: resetAttempt)
-                    .buttonStyle(.bordered)
+            GhostRaceTrackView(
+                playerProgress: playerProgress,
+                ghostProgress: ghostProgress,
+                gapMeters: gapMeters,
+                distanceTitle: selectedDistance.title,
+                ghostReady: selectedBenchmark?.bestTime != nil,
+                isConnected: bluetoothManager.metrics.connected
+            )
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-                benchmarkStatus
-            }
+            GhostRaceMetricBar(
+                elapsed: attemptElapsed,
+                gapMeters: gapMeters,
+                pace: attemptPace,
+                strokeRate: bluetoothManager.metrics.strokeRate
+            )
         }
+        .padding(.horizontal, 16)
+        .padding(.top, 10)
+        .padding(.bottom, bottomInset)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 
     @ViewBuilder
-    private var benchmarkStatus: some View {
+    private func overlayLayout(bottomInset: CGFloat) -> some View {
+        if let overlayContent {
+            Color.black.opacity(0.18)
+                .ignoresSafeArea()
+
+            GhostRaceSetupOverlay(
+                content: overlayContent,
+                primaryAction: overlayContent.actionTitle == nil ? nil : { performPrimaryAction() }
+            )
+            .padding(.horizontal, 28)
+            .padding(.bottom, bottomInset)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+        }
+    }
+
+    private var backdrop: some View {
+        LinearGradient(
+            colors: [
+                Color(red: 0.03, green: 0.07, blue: 0.13),
+                Color(red: 0.04, green: 0.14, blue: 0.19),
+                Color(red: 0.03, green: 0.08, blue: 0.12),
+            ],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+        .overlay(alignment: .topTrailing) {
+            Circle()
+                .fill(AppTheme.tint.opacity(0.14))
+                .frame(width: 260, height: 260)
+                .blur(radius: 52)
+                .offset(x: 60, y: -80)
+        }
+        .overlay(alignment: .bottomLeading) {
+            Circle()
+                .fill(AppTheme.success.opacity(0.10))
+                .frame(width: 220, height: 220)
+                .blur(radius: 56)
+                .offset(x: -40, y: 100)
+        }
+        .ignoresSafeArea()
+    }
+
+    private var controlStatus: GhostRaceStatusStyle {
         switch healthSyncManager.authorizationState {
         case .unavailable:
-            Text("Apple Health is unavailable on this device, so Ghost Race cannot generate personal targets here.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+            return GhostRaceStatusStyle(title: "Health unavailable", systemImage: "heart.slash.fill", tint: AppTheme.warning)
         case .notDetermined, .denied:
-            Text("Enable Apple Health first so the app can build your benchmark ghost from synced rows.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+            return GhostRaceStatusStyle(title: "Enable Health", systemImage: "heart.text.square.fill", tint: AppTheme.warning)
+        case .authorized where selectedBenchmark?.bestTime == nil:
+            return GhostRaceStatusStyle(title: "No ghost yet", systemImage: "hare.fill", tint: AppTheme.tint)
+        case .authorized where !bluetoothManager.metrics.connected:
+            return GhostRaceStatusStyle(title: "Awaiting PM5", systemImage: "bolt.slash.fill", tint: Color.orange)
         case .authorized:
-            if let benchmark = selectedBenchmark, let bestTime = benchmark.bestTime {
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Text(AppFormatters.duration(bestTime))
-                            .font(.title3.weight(.bold))
-                            .monospacedDigit()
-
-                        Spacer(minLength: 12)
-
-                        Text(AppFormatters.pace(benchmark.pace))
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(.secondary)
-                    }
-
-                    Text(benchmark.sourceSummary)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
-            } else {
-                Text("No ghost exists for this distance yet. Finish a synced workout first, then come back here.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
+            return GhostRaceStatusStyle(title: "Race live", systemImage: "flag.checkered.2.crossed", tint: AppTheme.success)
         }
     }
 
-    private var raceCard: some View {
-        PanelCard(title: selectedDistance.title, subtitle: "Your live boat tracks PM5 distance while the ghost follows your benchmark clock.") {
-            VStack(alignment: .leading, spacing: 16) {
-                GhostRaceTrackView(
-                    playerProgress: playerProgress,
-                    ghostProgress: ghostProgress,
-                    distanceTitle: selectedDistance.title
-                )
-                .frame(height: 210)
+    private var overlayContent: GhostRaceOverlayContent? {
+        switch healthSyncManager.authorizationState {
+        case .unavailable:
+            return GhostRaceOverlayContent(
+                title: "Ghost Race Needs Apple Health",
+                message: "Use this mode on an iPhone where Apple Health is available and your rowing history can sync.",
+                systemImage: "iphone.slash",
+                tint: AppTheme.warning,
+                actionTitle: nil
+            )
+        case .notDetermined, .denied:
+            return GhostRaceOverlayContent(
+                title: "Enable Apple Health",
+                message: "Ghost Race builds its rival boat from your synced rows. Turn Health access on to load a benchmark.",
+                systemImage: "heart.text.square.fill",
+                tint: AppTheme.warning,
+                actionTitle: primaryActionTitle
+            )
+        case .authorized where selectedBenchmark?.bestTime == nil:
+            return GhostRaceOverlayContent(
+                title: "No Ghost For \(selectedDistance.title)",
+                message: "Finish one synced row at this distance, then come back and race your own benchmark live.",
+                systemImage: "hare.fill",
+                tint: AppTheme.tint,
+                actionTitle: primaryActionTitle
+            )
+        default:
+            guard !bluetoothManager.metrics.connected else { return nil }
 
-                if !bluetoothManager.metrics.connected {
-                    Button(bluetoothManager.isScanning ? "Stop Scan" : "Scan for PM5") {
-                        if bluetoothManager.isScanning {
-                            bluetoothManager.stopScan()
-                        } else {
-                            bluetoothManager.startScan()
-                        }
-                    }
-                    .frame(maxWidth: .infinity)
-                    .buttonStyle(.borderedProminent)
-                }
-            }
+            return GhostRaceOverlayContent(
+                title: "Connect A PM5",
+                message: "Your shell only moves from live distance off the rower, so connect the PM5 before the start.",
+                systemImage: "figure.rower",
+                tint: AppTheme.success,
+                actionTitle: primaryActionTitle
+            )
         }
     }
 
-    private var summaryCard: some View {
-        PanelCard(title: "Segment Readout", subtitle: "Stay ahead of the ghost clock or close the gap stroke by stroke.") {
-            VStack(spacing: 12) {
-                HStack {
-                    MetricTile(title: "Gap", value: AppFormatters.gapMeters(gapMeters))
-                    MetricTile(title: "Distance", value: AppFormatters.distance(attemptDistance))
-                }
-
-                HStack {
-                    MetricTile(title: "Pace", value: AppFormatters.pace(attemptPace))
-                    MetricTile(title: "Ghost", value: AppFormatters.duration(selectedBenchmark?.bestTime))
-                }
-            }
+    private var primaryActionTitle: String? {
+        switch primaryActionKind {
+        case .requestHealthAccess:
+            "Enable Health"
+        case .refreshGhost:
+            "Refresh Ghost"
+        case .startScan:
+            "Scan for PM5"
+        case .stopScan:
+            "Stop Scan"
+        case .restart:
+            "Restart"
+        case .none:
+            nil
         }
     }
 
-    private var sessionHUD: some View {
-        HStack(spacing: 0) {
-            hudMetric(title: "Elapsed", value: AppFormatters.duration(attemptElapsed))
-            Divider()
-                .frame(height: 34)
-            hudMetric(title: "Gap", value: AppFormatters.gapMeters(gapMeters))
-            Divider()
-                .frame(height: 34)
-            hudMetric(title: "Pace", value: AppFormatters.pace(attemptPace))
-            Divider()
-                .frame(height: 34)
-            hudMetric(title: "Rate", value: AppFormatters.strokeRate(bluetoothManager.metrics.strokeRate))
+    private var primaryActionTint: Color {
+        switch primaryActionKind {
+        case .requestHealthAccess:
+            AppTheme.warning
+        case .refreshGhost:
+            AppTheme.tint
+        case .startScan, .stopScan:
+            AppTheme.success
+        case .restart:
+            AppTheme.tint
+        case .none:
+            .clear
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 14)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .strokeBorder(AppTheme.separator.opacity(0.12), lineWidth: 1)
-        }
-        .padding(.horizontal, 20)
-        .padding(.bottom, 8)
     }
 
-    private func hudMetric(title: String, value: String) -> some View {
-        VStack(spacing: 4) {
-            Text(title.uppercased())
-                .font(.caption.weight(.medium))
-                .foregroundStyle(.secondary)
-
-            Text(value)
-                .font(.headline.weight(.semibold))
-                .monospacedDigit()
-                .minimumScaleFactor(0.7)
-                .lineLimit(1)
+    private var primaryActionKind: GhostRacePrimaryAction {
+        switch healthSyncManager.authorizationState {
+        case .unavailable:
+            .none
+        case .notDetermined, .denied:
+            .requestHealthAccess
+        case .authorized where selectedBenchmark?.bestTime == nil:
+            .refreshGhost
+        case .authorized where !bluetoothManager.metrics.connected:
+            bluetoothManager.isScanning ? .stopScan : .startScan
+        case .authorized:
+            .restart
         }
-        .frame(maxWidth: .infinity)
     }
 
-    private var attemptPace: TimeInterval? {
-        guard let attemptElapsed, attemptDistance > 0 else { return nil }
-        return attemptElapsed / attemptDistance * 500
+    private func performPrimaryAction() {
+        switch primaryActionKind {
+        case .requestHealthAccess:
+            healthSyncManager.requestAuthorization()
+        case .refreshGhost:
+            healthSyncManager.refreshTrainingInsights()
+        case .startScan:
+            bluetoothManager.startScan()
+        case .stopScan:
+            bluetoothManager.stopScan()
+        case .restart:
+            resetAttempt()
+        case .none:
+            break
+        }
     }
 
     private func captureBaselineIfNeeded() {
@@ -245,4 +286,13 @@ struct GhostRaceView: View {
         hasPresentedRecap = false
         captureBaselineIfNeeded()
     }
+}
+
+private enum GhostRacePrimaryAction {
+    case requestHealthAccess
+    case refreshGhost
+    case startScan
+    case stopScan
+    case restart
+    case none
 }

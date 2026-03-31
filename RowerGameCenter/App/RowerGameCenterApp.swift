@@ -13,7 +13,12 @@ struct RowerGameCenterApp: App {
         let health = HealthSyncManager(recapManager: recap)
         _healthSyncManager = State(initialValue: health)
 
-        _bluetoothManager = State(initialValue: PM5BluetoothManager())
+        _bluetoothManager = State(
+            initialValue: PM5BluetoothManager(
+                healthSyncManager: health,
+                recapManager: recap
+            )
+        )
     }
 
     var body: some Scene {

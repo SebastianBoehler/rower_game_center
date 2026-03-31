@@ -11,12 +11,10 @@ struct SettingsView: View {
             }
             .padding(.horizontal, 20)
             .padding(.top, 20)
-            .padding(.bottom, 32)
         }
+        .contentMargins(.bottom, 120, for: .scrollContent)
+        .ignoresSafeArea(edges: .bottom)
         .background(AppTheme.groupedBackground.ignoresSafeArea())
-        .navigationTitle("Settings")
-        .navigationBarTitleDisplayMode(.large)
-        .toolbarBackground(.visible, for: .navigationBar)
-        .toolbarBackground(AppTheme.groupedBackground, for: .navigationBar)
+        .toolbar(.hidden, for: .navigationBar)
     }
 }

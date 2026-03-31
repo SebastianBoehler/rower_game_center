@@ -24,16 +24,14 @@ struct HomeRecentWorkoutsCard: View {
     }
 
     private var unavailableMessage: some View {
-        ContentUnavailableView(
-            "Apple Health Unavailable",
-            systemImage: "heart.slash",
-            description: Text("Recent workouts appear here on a physical iPhone once Apple Health is available.")
-        )
+        Text("Apple Health is unavailable on this device.")
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
     }
 
     private var permissionPrompt: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Enable Apple Health to load recent rowing workouts on Home.")
+            Text("Enable Apple Health to load recent rowing workouts.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
 
@@ -63,11 +61,9 @@ struct HomeRecentWorkoutsCard: View {
                 .buttonStyle(.bordered)
             }
         } else if healthSyncManager.recentWorkouts.isEmpty {
-            ContentUnavailableView(
-                "No Workouts Yet",
-                systemImage: "clock.arrow.trianglehead.counterclockwise.rotate.90",
-                description: Text("As soon as you finish synced rowing sessions, the latest entries will show up here.")
-            )
+            Text("No synced rowing sessions yet — finish a workout to see it here.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
         } else {
             ForEach(Array(healthSyncManager.recentWorkouts.enumerated()), id: \.element.id) { index, workout in
                 workoutRow(for: workout)

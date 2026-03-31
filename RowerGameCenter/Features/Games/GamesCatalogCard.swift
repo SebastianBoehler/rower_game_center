@@ -1,18 +1,32 @@
 import SwiftUI
 
 struct GamesCatalogCard: View {
-    var body: some View {
-        PanelCard(title: "All Games", subtitle: "Competitive, rhythm, and technique surfaces.") {
-            VStack(spacing: 12) {
-                ForEach(Array(GameRoute.allCases.enumerated()), id: \.element.id) { index, route in
-                    NavigationLink(value: route) {
-                        GameCatalogRow(route: route)
-                    }
-                    .buttonStyle(.plain)
+    // Group routes by category, preserving the category display order
+    private var groupedRoutes: [(GameCategory, [GameRoute])] {
+        GameCategory.allCases.compactMap { category in
+            let routes = GameRoute.allCases.filter { $0.category == category }
+            return routes.isEmpty ? nil : (category, routes)
+        }
+    }
 
-                    if index < GameRoute.allCases.count - 1 {
-                        Divider()
-                            .padding(.leading, 58)
+    var body: some View {
+        PanelCard(title: "Games", subtitle: "Competitive, rhythm, and technique surfaces.") {
+            VStack(alignment: .leading, spacing: 20) {
+                ForEach(groupedRoutes, id: \.0.rawValue) { category, routes in
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(category.rawValue.uppercased())
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 4)
+
+                        VStack(spacing: 10) {
+                            ForEach(routes) { route in
+                                NavigationLink(value: route) {
+                                    GameCatalogRow(route: route)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
                     }
                 }
             }

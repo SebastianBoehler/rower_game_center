@@ -36,6 +36,7 @@ struct RootView: View {
             }
             .tag(AppTab.settings)
         }
+        .background(Color(uiColor: .systemGroupedBackground).ignoresSafeArea())
         .environment(self.navigationModel)
         .tint(AppTheme.tint)
         .onAppear {

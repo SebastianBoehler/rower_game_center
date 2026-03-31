@@ -2,7 +2,8 @@ import SwiftUI
 
 struct HomeCurrentSessionCard: View {
     @Environment(PM5BluetoothManager.self) private var bluetoothManager
-    @Environment(AppNavigationModel.self) private var navigationModel
+
+    @State private var showConnectSheet = false
 
     private let metricColumns = [
         GridItem(.flexible(), spacing: 12),
@@ -35,16 +36,19 @@ struct HomeCurrentSessionCard: View {
                         MetricTile(title: "Calories", value: AppFormatters.calories(bluetoothManager.metrics.calories))
                     }
                 } else {
-                    Text("The PM5 is not connected yet. Open Settings to scan, connect, and unlock the live dashboard plus game input.")
+                    Text("The PM5 is not connected yet. Scan now to unlock the live dashboard and game input.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
 
-                    Button("Open Connection Settings") {
-                        navigationModel.openSettings()
+                    Button("Connect PM5") {
+                        showConnectSheet = true
                     }
                     .frame(maxWidth: .infinity)
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
+                    .sheet(isPresented: $showConnectSheet) {
+                        PM5QuickConnectSheet()
+                    }
                 }
             }
         }

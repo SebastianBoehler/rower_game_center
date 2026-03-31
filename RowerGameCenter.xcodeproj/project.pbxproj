@@ -26,6 +26,7 @@
 		1BEC4EFBA359793036439FBB /* StrokeShapeGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F15A25325603A93C6A3F3E4 /* StrokeShapeGraphView.swift */; };
 		1BFF1A8737EB869628C73B1A /* GamesConnectionStatusCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32B6FEE68091E687EE6F85 /* GamesConnectionStatusCard.swift */; };
 		1F257CFA518AC16A96CAD939 /* GhostRaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946170C8C6CD148D4DA9337B /* GhostRaceView.swift */; };
+		1F9A774D1A2B3C4D5E6F7081 /* GhostRacePanels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F9A774C1A2B3C4D5E6F7081 /* GhostRacePanels.swift */; };
 		246B0D63B885ED746E165435 /* SessionRecapModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64AD4ACCC98D422D305002D /* SessionRecapModels.swift */; };
 		2A5D8F8983FA968531B3AEB8 /* SessionRecapBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B3A905C784BAD2A432ED2B /* SessionRecapBuilder.swift */; };
 		2BDB26E5D8E7138814865801 /* GamesGhostBenchmarksCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AD0905767E807318E18A265 /* GamesGhostBenchmarksCard.swift */; };
@@ -46,9 +47,13 @@
 		5720A2FA0EB9966C451D6F30 /* PM5BluetoothManager+Central.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1E9BAF3AB6F6E407CF4954 /* PM5BluetoothManager+Central.swift */; };
 		5A994A9C581820A58CC8DE57 /* PM5DeviceRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A675868BC79243AE97F82FFD /* PM5DeviceRow.swift */; };
 		5FA5FF105E7C1EEA327E796B /* PM5ConnectionSettingsCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C87922D36ED6E05E160184C1 /* PM5ConnectionSettingsCard.swift */; };
+		A77E01B12C3D4E5F60718293 /* PM5QuickConnectSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A88E01B12C3D4E5F60718293 /* PM5QuickConnectSheet.swift */; };
 		61EAC525B2C4DC127A591DAD /* CadenceLockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58E580F372CC5190AA7D2C87 /* CadenceLockView.swift */; };
 		6732C932ED34324C081AF7E8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 686D6D76B62A413FF3650619 /* LaunchScreen.storyboard */; };
 		67A237E38A7FF4A23D928D54 /* TempleErgTrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3E94F539B6A9E080A52DF8 /* TempleErgTrackView.swift */; };
+		A11E01B12C3D4E5F60718293 /* TempleErgSceneBackdrop.swift in Sources */ = {isa = PBXBuildFile; fileRef = A33E01B12C3D4E5F60718293 /* TempleErgSceneBackdrop.swift */; };
+		A22E01B12C3D4E5F60718293 /* TempleErgSprites.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44E01B12C3D4E5F60718293 /* TempleErgSprites.swift */; };
+		A55E01B12C3D4E5F60718293 /* TempleErgPanels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A66E01B12C3D4E5F60718293 /* TempleErgPanels.swift */; };
 		6ADC997FFC5AD468C0E21FE0 /* StructuredWorkoutSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C667CC13D53F9443DE05B2D /* StructuredWorkoutSessionView.swift */; };
 		6D2F594BD982F1FE3FF6938C /* TrainingGhostEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9489C54326C46F7252268BE /* TrainingGhostEngine.swift */; };
 		6E56C338963D6835D9F1F9DE /* PowerBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5F62E4A64E1605F67DD3379 /* PowerBar.swift */; };
@@ -98,6 +103,9 @@
 /* Begin PBXFileReference section */
 		0C3E94F539B6A9E080A52DF8 /* TempleErgTrackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempleErgTrackView.swift; sourceTree = "<group>"; };
 		0C60ADF1244491F3D50CBF98 /* TempleErgView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempleErgView.swift; sourceTree = "<group>"; };
+		A33E01B12C3D4E5F60718293 /* TempleErgSceneBackdrop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempleErgSceneBackdrop.swift; sourceTree = "<group>"; };
+		A44E01B12C3D4E5F60718293 /* TempleErgSprites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempleErgSprites.swift; sourceTree = "<group>"; };
+		A66E01B12C3D4E5F60718293 /* TempleErgPanels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempleErgPanels.swift; sourceTree = "<group>"; };
 		10707212A3FA2CD6F0AB7B6F /* HealthSyncStatusCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthSyncStatusCard.swift; sourceTree = "<group>"; };
 		14B0B9941439FC1161C17195 /* PM5BluetoothManager+ForceCurve.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PM5BluetoothManager+ForceCurve.swift"; sourceTree = "<group>"; };
 		1643792BFE38E8064A0C15C8 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -147,12 +155,14 @@
 		90AED96F509022CE6CB892DC /* DiagnosticsSettingsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosticsSettingsCard.swift; sourceTree = "<group>"; };
 		91BE27EE27B4CF3364440AB9 /* StatusBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBadge.swift; sourceTree = "<group>"; };
 		946170C8C6CD148D4DA9337B /* GhostRaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostRaceView.swift; sourceTree = "<group>"; };
+		1F9A774C1A2B3C4D5E6F7081 /* GhostRacePanels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostRacePanels.swift; sourceTree = "<group>"; };
 		98368523433D7EBBB5D18CBB /* PM5BluetoothManager+State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PM5BluetoothManager+State.swift"; sourceTree = "<group>"; };
 		A03A9D7042861FC6815352E4 /* PM5Discovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PM5Discovery.swift; sourceTree = "<group>"; };
 		A0840BCC3F9443B4A852F47E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A0CACAA4AC0EF3E3C229076D /* PM5BluetoothManager+Peripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PM5BluetoothManager+Peripheral.swift"; sourceTree = "<group>"; };
 		A675868BC79243AE97F82FFD /* PM5DeviceRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PM5DeviceRow.swift; sourceTree = "<group>"; };
-		A86DA1173A1C0DCB57EB22FE /* RowerGameCenter.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RowerGameCenter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A86DA1173A1C0DCB57EB22FE /* RowerGameCenter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RowerGameCenter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A88E01B12C3D4E5F60718293 /* PM5QuickConnectSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PM5QuickConnectSheet.swift; sourceTree = "<group>"; };
 		AC1E9BAF3AB6F6E407CF4954 /* PM5BluetoothManager+Central.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PM5BluetoothManager+Central.swift"; sourceTree = "<group>"; };
 		B020C6FB364845AEDA10CF35 /* LaneSprintView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaneSprintView.swift; sourceTree = "<group>"; };
 		B3208EFE6158DDDC3201499E /* StrokeShapeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeShapeView.swift; sourceTree = "<group>"; };
@@ -242,6 +252,7 @@
 				90AED96F509022CE6CB892DC /* DiagnosticsSettingsCard.swift */,
 				C87922D36ED6E05E160184C1 /* PM5ConnectionSettingsCard.swift */,
 				8080FF88BC57992F1D894C7A /* PM5DevicesCard.swift */,
+				A88E01B12C3D4E5F60718293 /* PM5QuickConnectSheet.swift */,
 				F56AC40C14A7F1C178D74C51 /* SettingsView.swift */,
 			);
 			path = Settings;
@@ -359,6 +370,7 @@
 				1F32B6FEE68091E687EE6F85 /* GamesConnectionStatusCard.swift */,
 				5AD0905767E807318E18A265 /* GamesGhostBenchmarksCard.swift */,
 				5665E726BA717BEE3DF83B5B /* GamesView.swift */,
+				1F9A774C1A2B3C4D5E6F7081 /* GhostRacePanels.swift */,
 				BAB9E0F1BB4B282A2647BC9C /* GhostRaceTrackView.swift */,
 				946170C8C6CD148D4DA9337B /* GhostRaceView.swift */,
 				38EFCB501A8C3F4D97D6EB67 /* LaneSprintTrackView.swift */,
@@ -367,6 +379,9 @@
 				B3208EFE6158DDDC3201499E /* StrokeShapeView.swift */,
 				F6D9B44892FE7358FD5C290A /* TempleErgEngine.swift */,
 				7D76BA13269C071928CE48C6 /* TempleErgModels.swift */,
+				A66E01B12C3D4E5F60718293 /* TempleErgPanels.swift */,
+				A33E01B12C3D4E5F60718293 /* TempleErgSceneBackdrop.swift */,
+				A44E01B12C3D4E5F60718293 /* TempleErgSprites.swift */,
 				0C3E94F539B6A9E080A52DF8 /* TempleErgTrackView.swift */,
 				0C60ADF1244491F3D50CBF98 /* TempleErgView.swift */,
 			);
@@ -489,6 +504,7 @@
 				1BFF1A8737EB869628C73B1A /* GamesConnectionStatusCard.swift in Sources */,
 				2BDB26E5D8E7138814865801 /* GamesGhostBenchmarksCard.swift in Sources */,
 				0E74677A03F755A963616B24 /* GamesView.swift in Sources */,
+				1F9A774D1A2B3C4D5E6F7081 /* GhostRacePanels.swift in Sources */,
 				A2E651D9AB4BA398DA719ED2 /* GhostRaceTrackView.swift in Sources */,
 				1F257CFA518AC16A96CAD939 /* GhostRaceView.swift in Sources */,
 				2E5F4C4EB6C470F61F044180 /* HKHealthStore+AsyncQueries.swift in Sources */,
@@ -522,6 +538,7 @@
 				5FA5FF105E7C1EEA327E796B /* PM5ConnectionSettingsCard.swift in Sources */,
 				5A994A9C581820A58CC8DE57 /* PM5DeviceRow.swift in Sources */,
 				A8B47C5B0A9CDC848409862C /* PM5DevicesCard.swift in Sources */,
+				A77E01B12C3D4E5F60718293 /* PM5QuickConnectSheet.swift in Sources */,
 				FD39677DCF06784F3BC84BFB /* PM5Diagnostics.swift in Sources */,
 				75F8553CDC3DFE352D231353 /* PM5DiagnosticsView.swift in Sources */,
 				3E2E97DFD54EDFCA673D4BC0 /* PM5Discovery.swift in Sources */,
@@ -551,6 +568,9 @@
 				15D71699B6226AA72B3FDB4A /* StructuredWorkoutTimelineRow.swift in Sources */,
 				D14E4DD6498465EAB9DE6A9D /* TempleErgEngine.swift in Sources */,
 				36FC44480775166F553B9D45 /* TempleErgModels.swift in Sources */,
+				A55E01B12C3D4E5F60718293 /* TempleErgPanels.swift in Sources */,
+				A11E01B12C3D4E5F60718293 /* TempleErgSceneBackdrop.swift in Sources */,
+				A22E01B12C3D4E5F60718293 /* TempleErgSprites.swift in Sources */,
 				67A237E38A7FF4A23D928D54 /* TempleErgTrackView.swift in Sources */,
 				0D04D3021370F1C3BFEFDE52 /* TempleErgView.swift in Sources */,
 				6D2F594BD982F1FE3FF6938C /* TrainingGhostEngine.swift in Sources */,
@@ -572,6 +592,7 @@
 				CODE_SIGN_ENTITLEMENTS = RowerGameCenter/Support/RowerGameCenter.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8P4NW2AQ75;
 				INFOPLIST_FILE = RowerGameCenter/Support/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -594,6 +615,7 @@
 				CODE_SIGN_ENTITLEMENTS = RowerGameCenter/Support/RowerGameCenter.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8P4NW2AQ75;
 				INFOPLIST_FILE = RowerGameCenter/Support/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (

@@ -1,5 +1,12 @@
 import SwiftUI
 
+enum GameCategory: String, CaseIterable {
+    case race = "Race"
+    case arcade = "Arcade"
+    case rhythm = "Rhythm"
+    case technique = "Technique"
+}
+
 enum GameRoute: String, CaseIterable, Hashable, Identifiable {
     case templeErg
     case ghostRace
@@ -41,6 +48,15 @@ enum GameRoute: String, CaseIterable, Hashable, Identifiable {
         case .laneSprint: "flag.checkered.circle.fill"
         case .cadenceLock: "metronome.fill"
         case .strokeShape: "waveform.path.ecg.rectangle"
+        }
+    }
+
+    var category: GameCategory {
+        switch self {
+        case .ghostRace, .laneSprint: .race
+        case .templeErg: .arcade
+        case .cadenceLock: .rhythm
+        case .strokeShape: .technique
         }
     }
 

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct HomeChallengesCard: View {
     @Environment(HealthSyncManager.self) private var healthSyncManager
+    @Environment(AppNavigationModel.self) private var navigationModel
 
     var body: some View {
         PanelCard(title: "Challenges", subtitle: "Small daily and weekly goals that turn raw volume into momentum.") {
@@ -39,9 +40,22 @@ struct HomeChallengesCard: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         } else {
+            let incomplete = healthSyncManager.trainingChallenges.filter { !$0.isCompleted }
+
             VStack(spacing: 14) {
                 ForEach(healthSyncManager.trainingChallenges) { challenge in
                     ChallengeRow(challenge: challenge)
+                }
+
+                if !incomplete.isEmpty {
+                    Button {
+                        navigationModel.openGamesLibrary()
+                    } label: {
+                        Label("Play a Game", systemImage: "gamecontroller.fill")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
                 }
             }
         }

@@ -41,6 +41,16 @@ final class HealthSyncManager {
         authorizationState != .unavailable && syncState != .requestingAuthorization
     }
 
+    var isWorkoutActive: Bool {
+        activeWorkout != nil
+    }
+
+    var canFinishWorkout: Bool {
+        authorizationState == .authorized
+            && activeWorkout != nil
+            && syncState != .saving
+    }
+
     var statusTitle: String {
         switch authorizationState {
         case .unavailable:
