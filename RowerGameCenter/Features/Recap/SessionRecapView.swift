@@ -13,8 +13,8 @@ struct SessionRecapView: View {
         ScrollView {
             VStack(spacing: 20) {
                 summaryCard
-                posterPreview
                 metricsCard
+                posterPreview
             }
             .padding(.horizontal, 20)
             .padding(.top, 20)
@@ -23,13 +23,6 @@ struct SessionRecapView: View {
         .background(AppTheme.groupedBackground.ignoresSafeArea())
         .navigationTitle("Share Recap")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("Done") {
-                    recapManager.dismissActiveRecap()
-                }
-            }
-        }
         .safeAreaInset(edge: .bottom) {
             shareBar
         }
