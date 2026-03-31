@@ -3,8 +3,9 @@ import SwiftUI
 struct StrokeShapeGraphView: View {
     let referenceCurve: [Double]
     let liveCurve: [Double]?
-    let averageCurve: [Double]?
+    let historicalCurves: [[Double]]
     let tint: Color
+    let liveCurveIsPreview: Bool
 
     var body: some View {
         GeometryReader { geometry in
@@ -23,8 +24,8 @@ struct StrokeShapeGraphView: View {
 
                 Canvas { context, size in
                     drawGrid(in: &context, size: size)
+                    drawHistoricalCurves(in: &context, size: size)
                     drawReferenceCurve(in: &context, size: size)
-                    drawAverageCurve(in: &context, size: size)
                     drawLiveCurve(in: &context, size: size)
                 }
 
@@ -38,14 +39,14 @@ struct StrokeShapeGraphView: View {
     private var overlayChrome: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 8) {
-                legendChip(title: "Reference", tint: .secondary)
+                legendChip(title: "Optimal", tint: .secondary)
 
-                if averageCurve != nil {
-                    legendChip(title: "Rolling Avg", tint: AppTheme.tint)
+                if !historicalCurves.isEmpty {
+                    legendChip(title: "Last 10", tint: tint.opacity(0.35))
                 }
 
                 if liveCurve != nil {
-                    legendChip(title: "Live", tint: tint)
+                    legendChip(title: "Current", tint: tint)
                 }
             }
             .padding(.horizontal, 20)
@@ -113,19 +114,30 @@ struct StrokeShapeGraphView: View {
         context.stroke(
             path,
             with: .color(.secondary),
-            style: StrokeStyle(lineWidth: 2.5, lineCap: .round, dash: [8, 6])
+            style: StrokeStyle(lineWidth: 3, lineCap: .round, dash: [8, 6])
         )
     }
 
-    private func drawAverageCurve(in context: inout GraphicsContext, size: CGSize) {
-        guard let averageCurve else { return }
+    private func drawHistoricalCurves(in context: inout GraphicsContext, size: CGSize) {
+        let curves = if liveCurve == nil || liveCurveIsPreview {
+            historicalCurves
+        } else {
+            Array(historicalCurves.dropLast())
+        }
+        guard !curves.isEmpty else { return }
 
-        let path = curvePath(for: averageCurve, in: size)
-        context.stroke(
-            path,
-            with: .color(AppTheme.tint.opacity(0.6)),
-            style: StrokeStyle(lineWidth: 3, lineCap: .round)
-        )
+        for (index, curve) in curves.enumerated() {
+            let progress = Double(index + 1) / Double(curves.count)
+            let opacity = 0.08 + (progress * 0.26)
+            let lineWidth = 1.2 + (progress * 0.8)
+            let path = curvePath(for: curve, in: size)
+
+            context.stroke(
+                path,
+                with: .color(tint.opacity(opacity)),
+                style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round)
+            )
+        }
     }
 
     private func drawLiveCurve(in context: inout GraphicsContext, size: CGSize) {

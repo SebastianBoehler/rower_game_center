@@ -17,6 +17,7 @@ final class PM5BluetoothManager: NSObject {
     var connectedDeviceName: String?
     var supportsForceCurve = false
     var latestForceCurve: ForceCurveStroke?
+    var liveForceCurvePreview: ForceCurveStroke?
     var recentForceCurves: [ForceCurveStroke] = []
 
     @ObservationIgnored var peripherals: [UUID: CBPeripheral] = [:]
@@ -31,6 +32,7 @@ final class PM5BluetoothManager: NSObject {
     @ObservationIgnored var controlForceCurveRequestInFlight = false
     @ObservationIgnored var hasLoggedLiveMetrics = false
     @ObservationIgnored var seenNotificationCharacteristicUUIDs: Set<String> = []
+    @ObservationIgnored var healthWorkoutInactivityTask: Task<Void, Never>?
     @ObservationIgnored let healthSyncManager: HealthSyncManager?
     @ObservationIgnored let recapManager: SessionRecapManager?
     @ObservationIgnored let centralManager: CBCentralManager
@@ -210,7 +212,10 @@ final class PM5BluetoothManager: NSObject {
             )
             syncHealthMetricsIfNeeded()
         case .forceCurve(let packet):
-            guard let stroke = forceCurveAssembler.ingest(packet) else { return }
+            guard let stroke = forceCurveAssembler.ingest(packet) else {
+                updateForceCurvePreview(samples: forceCurveAssembler.partialSamples)
+                return
+            }
             applyForceCurveStroke(stroke)
         }
     }

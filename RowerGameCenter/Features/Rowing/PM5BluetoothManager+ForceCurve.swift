@@ -21,6 +21,7 @@ extension PM5BluetoothManager {
     func resetForceCurveState() {
         supportsForceCurve = false
         latestForceCurve = nil
+        liveForceCurvePreview = nil
         recentForceCurves = []
         controlTransmitCharacteristic = nil
         controlReceiveCharacteristic = nil
@@ -36,6 +37,11 @@ extension PM5BluetoothManager {
         previousStrokeState: Int?,
         newStrokeState: Int?
     ) {
+        if previousStrokeState == PM5StrokeState.recovery,
+           newStrokeState != PM5StrokeState.recovery {
+            liveForceCurvePreview = nil
+        }
+
         guard supportsForceCurve else { return }
         guard previousStrokeState != PM5StrokeState.recovery,
               newStrokeState == PM5StrokeState.recovery else {
@@ -56,12 +62,22 @@ extension PM5BluetoothManager {
     }
 
     func applyForceCurveStroke(_ stroke: ForceCurveStroke) {
+        liveForceCurvePreview = nil
         guard stroke.samples != latestForceCurve?.samples else { return }
 
         latestForceCurve = stroke
         recentForceCurves.append(stroke)
-        recentForceCurves = Array(recentForceCurves.suffix(5))
+        recentForceCurves = Array(recentForceCurves.suffix(10))
         logNotice("Captured force curve with \(stroke.samples.count) samples.", category: "forceCurve")
+    }
+
+    func updateForceCurvePreview(samples: [Double]) {
+        guard samples.count > 1 else { return }
+
+        liveForceCurvePreview = ForceCurveStroke(
+            capturedAt: .now,
+            samples: samples
+        )
     }
 
     private func requestControlForceCurveChunk() {
@@ -126,6 +142,8 @@ extension PM5BluetoothManager {
             pendingControlForceCurvePeak = max(pendingControlForceCurvePeak, sample)
             lastValue = sample
         }
+
+        updateForceCurvePreview(samples: pendingControlForceCurveSamples)
 
         if pendingControlForceCurveSamples.count > 10,
            chunk.samples.last == 0 {

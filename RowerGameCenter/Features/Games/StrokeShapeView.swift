@@ -17,8 +17,25 @@ struct StrokeShapeView: View {
         }
     }
 
-    private var rollingAverageCurve: [Double]? {
-        StrokeShapeAnalyzer.averageCurve(from: bluetoothManager.recentForceCurves)
+    private var livePreviewCurve: [Double]? {
+        bluetoothManager.liveForceCurvePreview.map {
+            StrokeShapeAnalyzer.normalizedCurve(from: $0.samples)
+        }
+    }
+
+    private var displayedCurve: [Double]? {
+        livePreviewCurve ?? liveCurve
+    }
+
+    private var isPreviewingLiveCurve: Bool {
+        livePreviewCurve != nil
+    }
+
+    private var historicalCurves: [[Double]] {
+        bluetoothManager.recentForceCurves
+            .suffix(10)
+            .map { StrokeShapeAnalyzer.normalizedCurve(from: $0.samples) }
+            .filter { !$0.isEmpty }
     }
 
     var body: some View {
@@ -76,7 +93,7 @@ struct StrokeShapeView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     StatusBadge(title: "Waiting for first stroke", systemImage: "waveform", tint: AppTheme.tint)
 
-                    Text("If the graph stays empty while you row, the monitor may require an explicit curve read on each stroke. The app is already attempting that when the PM5 enters recovery.")
+                    Text(waitingMessage)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -84,9 +101,10 @@ struct StrokeShapeView: View {
 
             StrokeShapeGraphView(
                 referenceCurve: referenceCurve,
-                liveCurve: nil,
-                averageCurve: nil,
-                tint: AppTheme.tint
+                liveCurve: livePreviewCurve,
+                historicalCurves: [],
+                tint: AppTheme.tint,
+                liveCurveIsPreview: isPreviewingLiveCurve
             )
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
@@ -104,9 +122,10 @@ struct StrokeShapeView: View {
 
             StrokeShapeGraphView(
                 referenceCurve: referenceCurve,
-                liveCurve: liveCurve,
-                averageCurve: rollingAverageCurve,
-                tint: feedbackTint
+                liveCurve: displayedCurve,
+                historicalCurves: historicalCurves,
+                tint: feedbackTint,
+                liveCurveIsPreview: isPreviewingLiveCurve
             )
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
@@ -237,6 +256,14 @@ struct StrokeShapeView: View {
         case .balanced: AppTheme.success
         case .earlyPeak, .latePeak, .spikyDrive, .flatDrive: AppTheme.tint
         }
+    }
+
+    private var waitingMessage: String {
+        if isPreviewingLiveCurve {
+            return "The PM5 has started streaming curve samples. Finish the stroke and the first full overlay plus coaching score will lock in automatically."
+        }
+
+        return "If the graph stays empty while you row, the monitor may require an explicit curve read on each stroke. The app is already attempting that when the PM5 enters recovery."
     }
 }
 

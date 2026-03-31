@@ -38,6 +38,17 @@ struct PM5ForceCurveAssembler {
         packets = [:]
     }
 
+    var partialSamples: [Double] {
+        guard let expectedPacketCount else { return [] }
+
+        let zeroBasedPreview = contiguousPackets(for: Array(0 ..< expectedPacketCount))
+        if !zeroBasedPreview.isEmpty {
+            return zeroBasedPreview.flatMap { $0 }
+        }
+
+        return contiguousPackets(for: Array(1 ... expectedPacketCount)).flatMap { $0 }
+    }
+
     private func assembledPackets(total: Int) -> [[Double]]? {
         let zeroBasedOrder = Array(0 ..< total)
         if zeroBasedOrder.allSatisfy({ packets[$0] != nil }) {
@@ -50,5 +61,16 @@ struct PM5ForceCurveAssembler {
         }
 
         return nil
+    }
+
+    private func contiguousPackets(for order: [Int]) -> [[Double]] {
+        var result: [[Double]] = []
+
+        for sequenceNumber in order {
+            guard let packet = packets[sequenceNumber] else { break }
+            result.append(packet)
+        }
+
+        return result
     }
 }

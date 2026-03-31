@@ -10,7 +10,7 @@ struct CadenceLockView: View {
     @State private var remainingSeconds = roundDuration
     @State private var lastProcessedSecond = -1
 
-    private static let targets = [18, 20, 22, 24, 26, 28, 24, 20]
+    private static let targets = [18, 20, 22, 24, 26, 24, 22, 20]
     private static let roundDuration = 12
     private static let tolerance = 1
 
@@ -38,7 +38,8 @@ struct CadenceLockView: View {
             CadenceLockDialView(
                 strokeRate: bluetoothManager.metrics.strokeRate,
                 targetRate: currentTarget,
-                tolerance: Self.tolerance
+                tolerance: Self.tolerance,
+                targetRates: Self.targets
             )
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }

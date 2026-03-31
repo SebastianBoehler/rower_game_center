@@ -6,11 +6,30 @@ struct CadenceLockDialView: View {
     let strokeRate: Int?
     let targetRate: Int
     let tolerance: Int
+    let targetRates: [Int]
 
-    private let minRate = 14.0
-    private let maxRate = 34.0
     private let arcStart = 0.13
     private let arcEnd = 0.87
+
+    private var floorRate: Int {
+        targetRates.min() ?? targetRate
+    }
+
+    private var ceilingRate: Int {
+        targetRates.max() ?? targetRate
+    }
+
+    private var minRate: Double {
+        Double(floorRate - tolerance - 1)
+    }
+
+    private var maxRate: Double {
+        Double(ceilingRate + tolerance + 1)
+    }
+
+    private var markerRates: [Int] {
+        [floorRate, Int(round(Double(floorRate + ceilingRate) / 2.0)), ceilingRate]
+    }
 
     private var clampedRate: Double {
         let rawRate = Double(strokeRate ?? targetRate)
@@ -91,11 +110,11 @@ struct CadenceLockDialView: View {
             Spacer()
 
             HStack {
-                Text("14")
+                Text("\(markerRates[0])")
                 Spacer()
-                Text("24")
+                Text("\(markerRates[1])")
                 Spacer()
-                Text("34")
+                Text("\(markerRates[2])")
             }
             .font(.caption.weight(.medium))
             .foregroundStyle(.secondary)
